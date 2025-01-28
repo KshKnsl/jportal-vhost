@@ -23,7 +23,7 @@ const Header = ({ setIsAuthenticated }) => {
             <ThemeBtn />
             <div className='hover:bg-gray-700 rounded-full p-2 dark:hover:bg-gray-300'>
               <img
-                src='/jportal/icons/logout.svg' // hardcoded path, fix later
+                src='/icons/logout.svg' // hardcoded path, fix later
                 alt="Logout"
                 onClick={handleLogout}
                 className="w-6 h-6 cursor-pointer hover:opacity-80 transition-opacity dark:filter dark:invert"
