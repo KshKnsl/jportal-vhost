@@ -19,7 +19,7 @@ export default function Navbar() {
       initial={{ y: 100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className="fixed bottom-0 left-0 max-w-full min-w-full bg-[#191C20] dark:bg-gray-100 py-2 px-4 z-50"
+      className="fixed bottom-0 left-0 max-w-full min-w-full bg-[#191C20] dark:bg-gray-100 py-2 px-2 z-50"
     >
       <ul className="flex items-center justify-between max-w-screen-lg mx-auto">
         {navItems.map((item) => {
