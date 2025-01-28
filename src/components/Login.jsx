@@ -104,7 +104,7 @@ export default function Login({ onLoginSuccess, w }) {
   }
   return (
     <div className="flex min-h-screen items-center justify-center dark:bg-gray-100 bg-gray-900">
-      <div className="w-full max-w-md space-y-6 p-6 dark:bg-white bg-gray-800">
+      <div className="w-full max-w-md space-y-6 p-6 dark:bg-white bg-[#21252b]">
         <div className="space-y-2 text-center dark:text-gray-900 text-white">
           <h1 className="text-2xl font-bold">Login</h1>
           <p>Enter your credentials to sign in</p>

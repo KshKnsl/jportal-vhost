@@ -69,7 +69,7 @@ const AttendanceCard = ({
   return (
     <>
       <div
-        className="flex justify-between items-center py-1 border-b border-gray-700 cursor-pointer hover:bg-gray-800/50 dark:border-gray-300 dark:hover:bg-gray-200/50"
+        className="flex justify-between items-center py-1 cursor-pointer hover:bg-[#21252b] dark:border-gray-300 dark:hover:bg-gray-200/50"
         onClick={handleClick}
       >
         <div className="flex-1 mr-4">
