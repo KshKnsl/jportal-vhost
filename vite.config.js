@@ -50,7 +50,7 @@ export default defineConfig({
             sizes: "48x48",
           },
           {
-            src: "pwa-icons/circle.svg",
+            src: "pwa-icons/circle.ico",
             sizes: "72x72 96x96",
             purpose: "maskable",
           },
