@@ -267,7 +267,7 @@ function App() {
   }, []);
 
   if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center bg-[#191c20] text-white dark:bg-white">
+    return <div className="min-h-screen flex items-center justify-center bg-[#191c20] text-white dark:bg-white dark:text-black">
       Signing in...
     </div>;
   }
