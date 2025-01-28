@@ -20,6 +20,12 @@ function CircleProgress({ percentage, className = "" }) {
     return () => clearTimeout(timer);
   }, [percentage, circumference]);
 
+  const getStrokeColor = () => {
+    if (percentage > 80) return "#71F170";
+    else if (percentage >= 70) return "#FFC008";
+    else return "#DF212B";
+  };
+
   return (
     <svg
       className={`w-[80px] h-[80px] ${className}`}
@@ -32,7 +38,7 @@ function CircleProgress({ percentage, className = "" }) {
           cy="25"
           r={radius}
           fill="transparent"
-          stroke="#a3c9fe"
+          stroke={getStrokeColor()}
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={offset}
