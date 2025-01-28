@@ -261,7 +261,7 @@ export default function Grades({
     return (
       <motion.div
         {...fadeInUp}
-        className="flex items-center justify-center py-4 h-[calc(100vh-<header_height>-<navbar_height>)] bg-[#191C20] text-white"
+        className="flex items-center justify-center py-4 h-[calc(100vh-<header_height>-<navbar_height>)] text-white"
       >
         <Loader2 className="w-8 h-8 animate-spin mr-2" />
         <span className="text-lg">Loading grades...</span>

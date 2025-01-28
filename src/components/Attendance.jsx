@@ -219,8 +219,25 @@ const Attendance = ({
 
       <div className="px-3 pb-4">
         {isAttendanceMetaLoading || isAttendanceDataLoading ? (
-          <div className="flex items-center justify-center py-4 h-[calc(100vh-<header_height>-<navbar_height>)]">
-            Loading attendance...
+          <div className="flex flex-row items-center justify-center py-4 h-[calc(100vh-<header_height>-<navbar_height>)]">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" className="w-16 h-16">
+              <circle fill="#0BB108" stroke="#0BB108" strokeWidth="15" r="15" cx="35" cy="100">
+                <animate attributeName="cx" calcMode="spline" dur="2" values="35;165;165;35;35" keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1" repeatCount="indefinite" begin="0"></animate>
+              </circle>
+              <circle fill="#0BB108" stroke="#0BB108" strokeWidth="15" opacity=".8" r="15" cx="35" cy="100">
+                <animate attributeName="cx" calcMode="spline" dur="2" values="35;165;165;35;35" keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1" repeatCount="indefinite" begin="0.05"></animate>
+              </circle>
+              <circle fill="#0BB108" stroke="#0BB108" strokeWidth="15" opacity=".6" r="15" cx="35" cy="100">
+                <animate attributeName="cx" calcMode="spline" dur="2" values="35;165;165;35;35" keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1" repeatCount="indefinite" begin=".1"></animate>
+              </circle>
+              <circle fill="#0BB108" stroke="#0BB108" strokeWidth="15" opacity=".4" r="15" cx="35" cy="100">
+                <animate attributeName="cx" calcMode="spline" dur="2" values="35;165;165;35;35" keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1" repeatCount="indefinite" begin=".15"></animate>
+              </circle>
+              <circle fill="#0BB108" stroke="#0BB108" strokeWidth="15" opacity=".2" r="15" cx="35" cy="100">
+                <animate attributeName="cx" calcMode="spline" dur="2" values="35;165;165;35;35" keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1" repeatCount="indefinite" begin=".2"></animate>
+              </circle>
+            </svg>
+          <div> Loading attendance data... </div>
           </div>
         ) : selectedSem && attendanceData[selectedSem.registration_id]?.error ? (
           <div className="flex items-center justify-center py-4">
