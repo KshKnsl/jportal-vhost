@@ -39,7 +39,7 @@ export default defineConfig({
         name: "JPortal",
         short_name: "JPortal",
         description: "A web portal for students to view attendance and grades.",
-        start_url: "/",
+        start_url: "",
         display: "standalone",
         background_color: "#191c20",
         theme_color: "#242a32",
