@@ -8,6 +8,7 @@ const navItems = [
   { name: "Exams", path: "/exams", icon: FileSpreadsheet },
   { name: "Subjects", path: "/subjects", icon: BookOpen },
   { name: "Profile", path: "/profile", icon: UserRound },
+  { name: "TimeTable", path: "/timetable", icon: UserRound },
 ]
 
 export default function Navbar() {

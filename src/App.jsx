@@ -1,18 +1,27 @@
-import { useState, useEffect } from 'react'
-import { HashRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
-import Header from './components/Header';
-import Navbar from './components/Navbar'
-import Login from './components/Login'
-import Attendance from './components/Attendance'
-import Grades from './components/Grades'
-import Exams from './components/Exams'
-import Subjects from './components/Subjects'
-import Profile from './components/Profile'
-import './App.css'
-import { ThemeProvider } from './context/ThemeContext'
+import { useState, useEffect } from "react";
+import {
+  HashRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
+import Header from "./components/Header";
+import Navbar from "./components/Navbar";
+import Login from "./components/Login";
+import Attendance from "./components/Attendance";
+import Grades from "./components/Grades";
+import Exams from "./components/Exams";
+import Subjects from "./components/Subjects";
+import Profile from "./components/Profile";
+import TimeTable from "./components/TimeTable";
+import "./App.css";
+import { ThemeProvider } from "./context/ThemeContext";
 
-import { WebPortal, LoginError } from "https://cdn.jsdelivr.net/npm/jsjiit@0.0.20/dist/jsjiit.esm.js";
-
+import {
+  WebPortal,
+  LoginError,
+} from "https://cdn.jsdelivr.net/npm/jsjiit@0.0.20/dist/jsjiit.esm.js";
 
 // Create WebPortal instance at the top level
 const w = new WebPortal();
@@ -34,14 +43,13 @@ function AuthenticatedApp({ w, setIsAuthenticated }) {
 
   // Add attendance goal state
   const [attendanceGoal, setAttendanceGoal] = useState(() => {
-    const savedGoal = localStorage.getItem('attendanceGoal');
+    const savedGoal = localStorage.getItem("attendanceGoal");
     return savedGoal ? parseInt(savedGoal) : 75; // Default to 75% if not set
   });
 
   // Add effect to save goal to localStorage when it changes
-  useEffect
-  (() => {
-    localStorage.setItem('attendanceGoal', attendanceGoal.toString());
+  useEffect(() => {
+    localStorage.setItem("attendanceGoal", attendanceGoal.toString());
   }, [attendanceGoal]);
 
   // Add new profile data state
@@ -155,19 +163,22 @@ function AuthenticatedApp({ w, setIsAuthenticated }) {
             />
           }
         />
-        <Route path="/exams" element={
-          <Exams
-            w={w}
-            examSchedule={examSchedule}
-            setExamSchedule={setExamSchedule}
-            examSemesters={examSemesters}
-            setExamSemesters={setExamSemesters}
-            selectedExamSem={selectedExamSem}
-            setSelectedExamSem={setSelectedExamSem}
-            selectedExamEvent={selectedExamEvent}
-            setSelectedExamEvent={setSelectedExamEvent}
-          />
-          } />
+        <Route
+          path="/exams"
+          element={
+            <Exams
+              w={w}
+              examSchedule={examSchedule}
+              setExamSchedule={setExamSchedule}
+              examSemesters={examSemesters}
+              setExamSemesters={setExamSemesters}
+              selectedExamSem={selectedExamSem}
+              setSelectedExamSem={setSelectedExamSem}
+              selectedExamEvent={selectedExamEvent}
+              setSelectedExamEvent={setSelectedExamEvent}
+            />
+          }
+        />
         <Route
           path="/subjects"
           element={
@@ -182,13 +193,17 @@ function AuthenticatedApp({ w, setIsAuthenticated }) {
             />
           }
         />
-        <Route path="/profile" element={
-          <Profile
-            w={w}
-            profileData={profileData}
-            setProfileData={setProfileData}
-          />
-        } />
+        <Route
+          path="/profile"
+          element={
+            <Profile
+              w={w}
+              profileData={profileData}
+              setProfileData={setProfileData}
+            />
+          }
+        />
+        <Route path="/timetable" element={<TimeTable />} />
       </Routes>
       <Navbar />
     </div>
@@ -200,38 +215,29 @@ function LoginWrapper({ onLoginSuccess, w }) {
 
   const handleLoginSuccess = () => {
     onLoginSuccess();
-    // Add a small delay to ensure state updates before navigation
     setTimeout(() => {
-      navigate('/attendance');
+      navigate("/attendance");
     }, 100);
   };
 
-  return (
-    <Login
-      onLoginSuccess={handleLoginSuccess}
-      w={w}
-    />
-  );
+  return <Login onLoginSuccess={handleLoginSuccess} w={w} />;
 }
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [themeMode, setThemeMode] = useState('dark')
-  const darkTheme = ()=>
-  {
-    setThemeMode('dark')
-  }
-  const lightTheme = ()=>
-  {
-    setThemeMode('light')
-  }
+  const [themeMode, setThemeMode] = useState("dark");
+  const darkTheme = () => {
+    setThemeMode("dark");
+  };
+  const lightTheme = () => {
+    setThemeMode("light");
+  };
   useEffect(() => {
-    document.querySelector('html')?.classList.remove('dark','light')
-    document.querySelector('html')?.classList.add(themeMode)
-  }
-  , [themeMode])
+    document.querySelector("html")?.classList.remove("dark", "light");
+    document.querySelector("html")?.classList.add(themeMode);
+  }, [themeMode]);
 
   useEffect(() => {
     const username = localStorage.getItem("username");
@@ -246,12 +252,23 @@ function App() {
           }
         }
       } catch (error) {
-        if (error instanceof LoginError && error.message.includes("JIIT Web Portal server is temporarily unavailable")) {
-          setError("JIIT Web Portal server is temporarily unavailable. Please try again later.");
-        } else if (error instanceof LoginError && error.message.includes("Failed to fetch")) {
-          setError("Please check your internet connection. If connected, JIIT Web Portal server is temporarily unavailable.");
-        }
-        else {
+        if (
+          error instanceof LoginError &&
+          error.message.includes(
+            "JIIT Web Portal server is temporarily unavailable"
+          )
+        ) {
+          setError(
+            "JIIT Web Portal server is temporarily unavailable. Please try again later."
+          );
+        } else if (
+          error instanceof LoginError &&
+          error.message.includes("Failed to fetch")
+        ) {
+          setError(
+            "Please check your internet connection. If connected, JIIT Web Portal server is temporarily unavailable."
+          );
+        } else {
           console.error("Auto-login failed:", error);
           setError("Auto-login failed. Please login again.");
         }
@@ -267,26 +284,35 @@ function App() {
   }, []);
 
   if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center bg-[#191c20] text-white dark:bg-white dark:text-black">
-      Signing in...
-    </div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#191c20] text-white dark:bg-white dark:text-black">
+        Signing in...
+      </div>
+    );
   }
 
   return (
-    <ThemeProvider value={{themeMode, darkTheme, lightTheme}}>
+    <ThemeProvider value={{ themeMode, darkTheme, lightTheme }}>
       <Router>
         <div className="min-h-screen bg-[#191c20] dark:bg-white dark:text-black select-none">
           {!isAuthenticated || !w.session ? (
             <Routes>
-              <Route path="*" element={
-                <>
-                  {error && <div className="text-red-500 dark:text-red-500 text-center pt-4">{error}</div>}
-                  <LoginWrapper
-                    onLoginSuccess={() => setIsAuthenticated(true)}
-                    w={w}
-                  />
-                </>
-              } />
+              <Route
+                path="*"
+                element={
+                  <>
+                    {error && (
+                      <div className="text-red-500 dark:text-red-500 text-center pt-4">
+                        {error}
+                      </div>
+                    )}
+                    <LoginWrapper
+                      onLoginSuccess={() => setIsAuthenticated(true)}
+                      w={w}
+                    />
+                  </>
+                }
+              />
             </Routes>
           ) : (
             <AuthenticatedApp w={w} setIsAuthenticated={setIsAuthenticated} />
@@ -297,4 +323,4 @@ function App() {
   );
 }
 
-export default App
+export default App;
