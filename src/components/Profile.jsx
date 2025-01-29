@@ -59,13 +59,13 @@ export default function Profile({ w, profileData, setProfileData }) {
         <motion.img
         src={photosrc}
         whileHover={{ scale: 1.1 }}
-        className="w-24 h-24 bg-gray-600 dark:bg-gray-300 rounded-full flex items-center justify-center text-3xl font-bold text-white dark:text-black"
+        className="w-24 h-24 bg-gray-600 dark:bg-gray-300 rounded-full flex items-center justify-center text-xl font-bold text-white dark:text-black"
       />
 
         :
           <motion.div
             whileHover={{ scale: 1.1 }}
-            className="w-24 h-24 bg-gray-600 dark:bg-gray-300 rounded-full flex items-center justify-center text-3xl font-bold text-white dark:text-black"
+            className="w-24 h-24 bg-gray-600 dark:bg-gray-300 rounded-full flex items-center justify-center text-xl font-bold text-white dark:text-black"
           >
             {info.studentname?.charAt(0)}
           </motion.div>}

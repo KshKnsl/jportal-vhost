@@ -5,6 +5,7 @@ const TimeTable = () => {
     <div className="top-0 fixed z-50">
       <iframe 
         src="https://planner.jpoop.in/" 
+        className="text-sm max-[390px]:text-xs" 
         style={{ width: '100vw', height: '100vh', border: 'none' }} 
         title="Google"
       />

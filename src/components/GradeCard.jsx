@@ -11,8 +11,8 @@ const GradeCard = ({ subject, getGradeColor }) => {
     >
       <div className="flex justify-between items-center py-1">
         <div className="flex-1 mr-4">
-          <h2 className="text-sm font-semibold max-[390px]:text-xs">{subject.subjectdesc}</h2>
-          <p className="text-sm lg:text-base max-[390px]:text-xs">{subject.subjectcode}</p>
+          <h2 className="text-sm max-[390px]:text-xs font-semibold">{subject.subjectdesc}</h2>
+          <p className="text-sm max-[390px]:text-xs lg:text-base">{subject.subjectcode}</p>
         </div>
         <div className="flex items-center gap-6">
           <div className="text-center">

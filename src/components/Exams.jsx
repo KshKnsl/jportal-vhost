@@ -78,9 +78,8 @@ export default function Exams({
       day: 'numeric'
     })
   }
-
   return (
-    <div className="text-white dark:text-black font-sans">
+    <div className="text-white dark:text-black font-sans text-sm max-[390px]:text-xs">
       <div className="sticky top-14 bg-[#191c20] dark:bg-white z-20">
         <div className="pt-2 pb-4 px-3">
           <Select 

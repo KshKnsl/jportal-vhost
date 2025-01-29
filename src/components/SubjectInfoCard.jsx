@@ -50,7 +50,7 @@ export function SubjectInfoCard({ subject }) {
           </div>
         </div>
         <div className="flex flex-col items-end">
-          <span className="text-3xl font-bold text-gray-200 dark:text-gray-800">
+          <span className="text-xl font-bold text-gray-200 dark:text-gray-800">
             {subject.credits.toFixed(1)}
           </span>
           <span className="text-xs text-gray-400 dark:text-gray-600">Credits</span>

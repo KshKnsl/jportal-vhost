@@ -73,16 +73,16 @@ const AttendanceCard = ({
         onClick={handleClick}
       >
         <div className="flex-1 mr-4">
-          <h2 className="text-sm font-semibold max-[390px]:text-xs dark:text-black">{displayName}</h2>
-          {lecture !== '' && <p className="text-sm lg:text-base max-[390px]:text-xs dark:text-black">Lecture: {lecture}%</p>}
-          {tutorial !== '' && <p className="text-sm lg:text-base max-[390px]:text-xs dark:text-black">Tutorial: {tutorial}%</p>}
-          {practical !== '' && <p className="text-sm lg:text-base max-[390px]:text-xs dark:text-black">Practical: {practical}%</p>}
+          <h2 className="text-sm max-[390px]:text-xs font-semibold dark:text-black">{displayName}</h2>
+          {lecture !== '' && <p className="text-sm max-[390px]:text-xs dark:text-black">Lecture: {lecture}%</p>}
+          {tutorial !== '' && <p className="text-sm max-[390px]:text-xs dark:text-black">Tutorial: {tutorial}%</p>}
+          {practical !== '' && <p className="text-sm max-[390px]:text-xs dark:text-black">Practical: {practical}%</p>}
         </div>
         <div className="flex items-center gap-2">
           <div className="text-center">
-            <div className="text-sm dark:text-black">{attendance.attended}</div>
+            <div className="text-sm max-[390px]:text-xs dark:text-black">{attendance.attended}</div>
             <div className="h-px w-full bg-gray-700 dark:bg-gray-300"></div>
-            <div className="text-sm dark:text-black">{attendance.total}</div>
+            <div className="text-sm max-[390px]:text-xs dark:text-black">{attendance.total}</div>
           </div>
           <div className="flex flex-col items-center">
             <CircleProgress key={Date.now()} percentage={attendancePercentage} />
@@ -204,8 +204,8 @@ const AttendanceCard = ({
                 classNames={{
                   months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
                   month: "space-y-4 w-full",
-                  caption: "flex justify-center pt-1 relative items-center text-sm",
-                  caption_label: "text-sm font-medium",
+                  caption: "flex justify-center pt-1 relative items-center text-sm max-[390px]:text-xs",
+                  caption_label: "text-sm max-[390px]:text-xs font-medium",
                   nav: "space-x-1 flex items-center",
                   nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100",
                   nav_button_previous: "absolute left-1",
@@ -214,7 +214,7 @@ const AttendanceCard = ({
                   head_row: "flex",
                   head_cell: "text-gray-500 rounded-md flex-1 font-normal text-[0.8rem] max-[390px]:text-[0.7rem]",
                   row: "flex w-full mt-2",
-                  cell: "flex-1 text-center text-sm p-0 relative [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                  cell: "flex-1 text-center text-sm max-[390px]:text-xs p-0 relative [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
                   day: "h-8 w-8 p-0 font-normal aria-selected:opacity-100 mx-auto max-[390px]:h-6 max-[390px]:w-6 max-[390px]:text-xs",
                   day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
                   day_today: "bg-accent text-accent-foreground",
@@ -237,7 +237,7 @@ const AttendanceCard = ({
                           : "bg-red-600/40 dark:bg-red-200/40"
                       }`}
                     >
-                      <p className="text-sm dark:text-black">
+                      <p className="text-sm max-[390px]:text-xs dark:text-black">
                         {classData.attendanceby}
                       </p>
 

@@ -115,7 +115,7 @@ export default function Subjects({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="dark:text-black text-white font-sans"
+      className="dark:text-black text-white font-sans text-sm max-[390px]:text-xs"
     >
       <motion.div
         initial={{ y: -20, opacity: 0 }}
@@ -188,4 +188,3 @@ export default function Subjects({
     </motion.div>
   )
 }
-

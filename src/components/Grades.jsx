@@ -1,14 +1,38 @@
-import React, { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Button } from "@/components/ui/button"
-import { Download, Loader2, ChevronRight } from "lucide-react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { generate_local_name, API } from "https://cdn.jsdelivr.net/npm/jsjiit@0.0.16/dist/jsjiit.esm.js"
-import GradeCard from "./GradeCard"
-import MarksCard from "./MarksCard"
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Download, Loader2, ChevronRight } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  generate_local_name,
+  API,
+} from "https://cdn.jsdelivr.net/npm/jsjiit@0.0.16/dist/jsjiit.esm.js";
+import GradeCard from "./GradeCard";
+import MarksCard from "./MarksCard";
+import CGPATargetCalculator  from "./CGPATargetCalculator";
 
 export default function Grades({
   w,
@@ -48,92 +72,104 @@ export default function Grades({
     const fetchData = async () => {
       try {
         if (semesterData) {
-          setGradesLoading(false)
-          return
+          setGradesLoading(false);
+          return;
         }
 
-        const data = await w.get_sgpa_cgpa()
+        const data = await w.get_sgpa_cgpa();
 
         if (!data || Object.keys(data).length === 0) {
-          setGradesError("Grade sheet is not available")
-          return
+          setGradesError("Grade sheet is not available");
+          return;
         }
 
-        setGradesData(data)
-        setSemesterData(data.semesterList)
+        setGradesData(data);
+        setSemesterData(data.semesterList);
       } catch (err) {
         if (err.message.includes("Unexpected end of JSON input")) {
-          setGradesError("Grade sheet is not available")
+          setGradesError("Grade sheet is not available");
         } else {
-          setGradesError("Failed to fetch grade data")
+          setGradesError("Failed to fetch grade data");
         }
-        console.error(err)
+        console.error(err);
       } finally {
-        setGradesLoading(false)
+        setGradesLoading(false);
       }
-    }
-    fetchData()
-  }, [w, semesterData, setGradesData, setSemesterData, setGradesError, setGradesLoading]) // Added setGradesLoading to dependencies
+    };
+    fetchData();
+  }, [
+    w,
+    semesterData,
+    setGradesData,
+    setSemesterData,
+    setGradesError,
+    setGradesLoading,
+  ]); // Added setGradesLoading to dependencies
 
   useEffect(() => {
     const fetchGradeCardSemesters = async () => {
       if (gradeCardSemesters.length === 0) {
         try {
-          const semesters = await w.get_semesters_for_grade_card()
-          setGradeCardSemesters(semesters)
+          const semesters = await w.get_semesters_for_grade_card();
+          setGradeCardSemesters(semesters);
 
           if (semesters.length > 0 && !selectedGradeCardSem) {
-            const latestSemester = semesters[0]
-            setSelectedGradeCardSem(latestSemester)
-            const data = await w.get_grade_card(latestSemester)
-            data.semesterId = latestSemester.registration_id
-            setGradeCard(data)
+            const latestSemester = semesters[0];
+            setSelectedGradeCardSem(latestSemester);
+            const data = await w.get_grade_card(latestSemester);
+            data.semesterId = latestSemester.registration_id;
+            setGradeCard(data);
             setGradeCards((prev) => ({
               ...prev,
               [latestSemester.registration_id]: data,
-            }))
+            }));
           }
         } catch (err) {
-          console.error("Failed to fetch grade card semesters:", err)
+          console.error("Failed to fetch grade card semesters:", err);
         }
       }
-    }
-    fetchGradeCardSemesters()
-  }, [w, gradeCardSemesters.length, setGradeCardSemesters, selectedGradeCardSem])
+    };
+    fetchGradeCardSemesters();
+  }, [
+    w,
+    gradeCardSemesters.length,
+    setGradeCardSemesters,
+    selectedGradeCardSem,
+  ]);
 
   useEffect(() => {
     const fetchMarksSemesters = async () => {
       if (marksSemesters.length === 0) {
         try {
-          const sems = await w.get_semesters_for_marks()
-          setMarksSemesters(sems)
+          const sems = await w.get_semesters_for_marks();
+          setMarksSemesters(sems);
         } catch (err) {
-          console.error("Failed to fetch marks semesters:", err)
+          console.error("Failed to fetch marks semesters:", err);
         }
       }
-    }
-    fetchMarksSemesters()
-  }, [w, marksSemesters.length])
+    };
+    fetchMarksSemesters();
+  }, [w, marksSemesters.length]);
 
   useEffect(() => {
-    let mounted = true
+    let mounted = true;
 
     const processPdfMarks = async () => {
       if (!selectedMarksSem || marksData[selectedMarksSem.registration_id]) {
-        return
+        return;
       }
 
-      setMarksLoading(true)
+      setMarksLoading(true);
       try {
-        const ENDPOINT = `/studentsexamview/printstudent-exammarks/${w.session.instituteid}/${selectedMarksSem.registration_id}/${selectedMarksSem.registration_code}`
-        const localname = await generate_local_name()
-        const headers = await w.session.get_headers(localname)
+        const ENDPOINT = `/studentsexamview/printstudent-exammarks/${w.session.instituteid}/${selectedMarksSem.registration_id}/${selectedMarksSem.registration_code}`;
+        const localname = await generate_local_name();
+        const headers = await w.session.get_headers(localname);
 
-        const pyodide = await loadPyodide()
+        const pyodide = await loadPyodide();
 
-        pyodide.globals.set("ENDPOINT", ENDPOINT)
-        pyodide.globals.set("fetchOptions", { method: "GET", headers })
-        pyodide.globals.set("API", API)
+        pyodide.globals.set("ENDPOINT", ENDPOINT);
+        pyodide.globals.set("fetchOptions", { method: "GET", headers });
+        pyodide.globals.set("API", API);
 
         const res = await pyodide.runPythonAsync(`
           import pyodide_js
@@ -158,61 +194,63 @@ export default function Grades({
               return marks
 
           await process_pdf()
-        `)
+        `);
 
         if (mounted) {
           const result = res.toJs({
             dict_converter: Object.fromEntries,
             create_pyproxies: false,
-          })
+          });
 
-          setMarksSemesterData(result)
+          setMarksSemesterData(result);
           setMarksData((prev) => ({
             ...prev,
             [selectedMarksSem.registration_id]: result,
-          }))
+          }));
         }
       } catch (error) {
-        console.error("Failed to load marks:", error)
+        console.error("Failed to load marks:", error);
       } finally {
         if (mounted) {
-          setMarksLoading(false)
+          setMarksLoading(false);
         }
       }
-    }
+    };
 
     if (selectedMarksSem) {
-      processPdfMarks()
+      processPdfMarks();
     }
 
     return () => {
-      mounted = false
-    }
-  }, [selectedMarksSem, w.session, marksData])
+      mounted = false;
+    };
+  }, [selectedMarksSem, w.session, marksData]);
 
   const handleSemesterChange = async (value) => {
-    setGradeCardLoading(true)
+    setGradeCardLoading(true);
     try {
-      const semester = gradeCardSemesters.find((sem) => sem.registration_id === value)
-      setSelectedGradeCardSem(semester)
+      const semester = gradeCardSemesters.find(
+        (sem) => sem.registration_id === value
+      );
+      setSelectedGradeCardSem(semester);
 
       if (gradeCards[value]) {
-        setGradeCard(gradeCards[value])
+        setGradeCard(gradeCards[value]);
       } else {
-        const data = await w.get_grade_card(semester)
-        data.semesterId = value
-        setGradeCard(data)
+        const data = await w.get_grade_card(semester);
+        data.semesterId = value;
+        setGradeCard(data);
         setGradeCards((prev) => ({
           ...prev,
           [value]: data,
-        }))
+        }));
       }
     } catch (error) {
-      console.error("Failed to fetch grade card:", error)
+      console.error("Failed to fetch grade card:", error);
     } finally {
-      setGradeCardLoading(false)
+      setGradeCardLoading(false);
     }
-  }
+  };
 
   const getGradeColor = (grade) => {
     const gradeColors = {
@@ -224,38 +262,40 @@ export default function Grades({
       C: "text-orange-400",
       D: "text-orange-500",
       F: "text-red-500",
-    }
-    return gradeColors[grade] || "text-white"
-  }
+    };
+    return gradeColors[grade] || "text-white";
+  };
 
   const handleDownloadMarks = async (semester) => {
     try {
-      await w.download_marks(semester)
-      setIsDownloadDialogOpen(false)
+      await w.download_marks(semester);
+      setIsDownloadDialogOpen(false);
     } catch (err) {
-      console.error("Failed to download marks:", err)
+      console.error("Failed to download marks:", err);
     }
-  }
+  };
 
   const handleMarksSemesterChange = async (value) => {
     try {
-      const semester = marksSemesters.find((sem) => sem.registration_id === value)
-      setSelectedMarksSem(semester)
+      const semester = marksSemesters.find(
+        (sem) => sem.registration_id === value
+      );
+      setSelectedMarksSem(semester);
 
       if (marksData[value]) {
-        setMarksSemesterData(marksData[value])
+        setMarksSemesterData(marksData[value]);
       }
     } catch (error) {
-      console.error("Failed to change marks semester:", error)
+      console.error("Failed to change marks semester:", error);
     }
-  }
+  };
 
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
     exit: { opacity: 0, y: -20 },
     transition: { duration: 0.3 },
-  }
+  };
 
   if (gradesLoading) {
     return (
@@ -266,9 +306,8 @@ export default function Grades({
         <Loader2 className="w-8 h-8 animate-spin mr-2" />
         <span className="text-lg">Loading grades...</span>
       </motion.div>
-    )
+    );
   }
-  
 
   return (
     <motion.div
@@ -276,9 +315,13 @@ export default function Grades({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-[#191C20] dark:bg-white text-white dark:text-black pt-2 pb-4 px-3 font-sans"
+      className="min-h-screen bg-[#191C20] dark:bg-white text-white dark:text-black pt-2 pb-4 px-3 font-sans text-sm max-[390px]:text-xs"
     >
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-4xl mx-auto">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="w-full max-w-4xl mx-auto"
+      >
         <TabsList className="grid w-full grid-cols-3 mb-4 bg-[#21252B] dark:bg-gray-50 rounded-lg p-1">
           <AnimatePresence mode="wait">
             {["overview", "semester", "marks"].map((tab) => (
@@ -304,14 +347,26 @@ export default function Grades({
           <TabsContent value="overview">
             <motion.div {...fadeInUp} className="space-y-6">
               {gradesError ? (
-                <motion.div {...fadeInUp} className="text-center py-8 bg-[#21252B] dark:bg-gray-50 rounded-lg">
-                  <p className="text-xl text-red-400">{gradesError}</p>
-                  <p className="text-gray-400 dark:text-gray-600 mt-2">Please check back later</p>
+                <motion.div
+                  {...fadeInUp}
+                  className="text-center py-8 bg-[#21252B] dark:bg-gray-50 rounded-lg"
+                >
+                  <p className="text-xl text-red-400"> {gradesError} </p>
+                  <p className="text-gray-400 dark:text-gray-600 mt-2">
+                    {" "}
+                    Please check back later{" "}
+                  </p>
                 </motion.div>
               ) : (
                 <>
-                  <motion.div {...fadeInUp} className="bg-[#21252B] dark:bg-gray-50 rounded-lg p-4">
-                    <h2 className="text-xl font-semibold mb-4">Grade Progression</h2>
+                  <motion.div
+                    {...fadeInUp}
+                    className="bg-[#21252B] dark:bg-gray-50 rounded-lg p-4"
+                  >
+                    <h2 className="text-xl font-semibold mb-4">
+                      {" "}
+                      Grade Progression{" "}
+                    </h2>
                     <ResponsiveContainer width="100%" height={250}>
                       <LineChart
                         data={semesterData}
@@ -326,12 +381,16 @@ export default function Grades({
                         <XAxis
                           dataKey="stynumber"
                           stroke="#9CA3AF"
-                          label={{ value: 'Semester', position: 'bottom', fill: '#9CA3AF' }}
+                          label={{
+                            value: "Semester",
+                            position: "bottom",
+                            fill: "#9CA3AF",
+                          }}
                           tickFormatter={(value) => `${value}`}
                         />
                         <YAxis
                           stroke="#9CA3AF"
-                          domain={['dataMin', 'dataMax']}
+                          domain={["dataMin", "dataMax"]}
                           ticks={undefined}
                           tickCount={5}
                           padding={{ top: 20, bottom: 20 }}
@@ -339,24 +398,21 @@ export default function Grades({
                         />
                         <Tooltip
                           contentStyle={{
-                            backgroundColor: '#374151',
-                            border: 'none',
-                            borderRadius: '8px',
-                            color: '#fff',
-                            fontWeight: '500',
+                            backgroundColor: "#374151",
+                            border: "none",
+                            borderRadius: "8px",
+                            color: "#fff",
+                            fontWeight: "500",
                           }}
                         />
-                        <Legend
-                          verticalAlign="top"
-                          height={36}
-                        />
+                        <Legend verticalAlign="top" height={36} />
                         <Line
                           type="monotone"
                           dataKey="sgpa"
                           stroke="#4ADE80"
                           name="SGPA"
                           strokeWidth={3}
-                          dot={{ fill: '#4ADE80' }}
+                          dot={{ fill: "#4ADE80" }}
                         />
                         <Line
                           type="monotone"
@@ -364,7 +420,7 @@ export default function Grades({
                           stroke="#60A5FA"
                           name="CGPA"
                           strokeWidth={3}
-                          dot={{ fill: '#60A5FA' }}
+                          dot={{ fill: "#60A5FA" }}
                         />
                       </LineChart>
                     </ResponsiveContainer>
@@ -380,19 +436,35 @@ export default function Grades({
                         className="bg-[#21252B] dark:bg-gray-50 rounded-lg p-4 flex justify-between items-center"
                       >
                         <div>
-                          <h3 className="text-lg font-semibold">Semester {sem.stynumber}</h3>
+                          <h4 className="text-base md:text-lg font-semibold">
+                            {" "}
+                            Semester {sem.stynumber}{" "}
+                          </h4>
                           <p className="text-sm text-gray-400 dark:text-gray-600">
-                            GP: {sem.earnedgradepoints.toFixed(1)}/{sem.totalcoursecredit * 10}
+                            GP: {sem.earnedgradepoints.toFixed(1)}/
+                            {sem.totalcoursecredit * 10}
                           </p>
                         </div>
                         <div className="flex items-center gap-6">
                           <div className="text-center">
-                            <div className="text-2xl font-bold text-green-400">{sem.sgpa}</div>
-                            <div className="text-xs text-gray-400 dark:text-gray-600">SGPA</div>
+                            <div className="text-lg md:text-2xl font-bold text-green-400">
+                              {" "}
+                              {sem.sgpa}{" "}
+                            </div>
+                            <div className="text-xs text-gray-400 dark:text-gray-600">
+                              {" "}
+                              SGPA{" "}
+                            </div>
                           </div>
                           <div className="text-center">
-                            <div className="text-2xl font-bold text-blue-400">{sem.cgpa}</div>
-                            <div className="text-xs text-gray-400 dark:text-gray-600">CGPA</div>
+                            <div className="text-lg md:text-2xl font-bold text-blue-400">
+                              {" "}
+                              {sem.cgpa}{" "}
+                            </div>
+                            <div className="text-xs text-gray-400 dark:text-gray-600">
+                              {" "}
+                              CGPA{" "}
+                            </div>
                           </div>
                         </div>
                       </motion.div>
@@ -400,25 +472,53 @@ export default function Grades({
                   </motion.div>
                 </>
               )}
+              <CGPATargetCalculator
+                      currentCGPA={semesterData[semesterData.length - 1].cgpa}
+                      totalCredits={semesterData.reduce(
+                        (acc, sem) => acc + sem.totalcoursecredit,
+                        0
+                      )}
+                      nextSemesterCredits={
+                        semesterData[semesterData.length - 1].totalcoursecredit
+                      }
+                    />
             </motion.div>
           </TabsContent>
 
           <TabsContent value="semester">
             <motion.div {...fadeInUp} className="space-y-4">
               {gradeCardSemesters.length === 0 ? (
-                <motion.div {...fadeInUp} className="text-center py-8 bg-[#21252B] dark:bg-gray-50 rounded-lg">
-                  <p className="text-xl">Grade card is not available yet</p>
-                  <p className="text-gray-400 dark:text-gray-600 mt-2">Please check back later</p>
+                <motion.div
+                  {...fadeInUp}
+                  className="text-center py-8 bg-[#21252B] dark:bg-gray-50 rounded-lg"
+                >
+                  <p className="text-xl"> Grade card is not available yet </p>
+                  <p className="text-gray-400 dark:text-gray-600 mt-2">
+                    {" "}
+                    Please check back later{" "}
+                  </p>
                 </motion.div>
               ) : (
                 <>
-                  <Select onValueChange={handleSemesterChange} value={selectedGradeCardSem?.registration_id}>
+                  <Select
+                    onValueChange={handleSemesterChange}
+                    value={selectedGradeCardSem?.registration_id}
+                  >
                     <SelectTrigger className="bg-[#21252B] dark:bg-gray-50 border-gray-700 dark:border-gray-300 text-white dark:text-black">
-                      <SelectValue placeholder={gradeCardLoading ? "Loading semesters..." : "Select semester"} />
+                      <SelectValue
+                        placeholder={
+                          gradeCardLoading
+                            ? "Loading semesters..."
+                            : "Select semester"
+                        }
+                      />
                     </SelectTrigger>
                     <SelectContent className="bg-[#21252B] dark:bg-gray-50 border-gray-700 dark:border-gray-300 text-white dark:text-black">
                       {gradeCardSemesters.map((sem) => (
-                        <SelectItem key={sem.registration_id} value={sem.registration_id}>
+                        <SelectItem
+                          key={sem.registration_id}
+                          value={sem.registration_id}
+                        >
                           {sem.registration_code}
                         </SelectItem>
                       ))}
@@ -433,17 +533,29 @@ export default function Grades({
                         className="flex items-center justify-center py-8 bg-[#21252B] dark:bg-gray-50 rounded-lg"
                       >
                         <Loader2 className="w-6 h-6 animate-spin mr-2" />
-                        <span>Loading subjects...</span>
+                        <span> Loading subjects... </span>
                       </motion.div>
                     ) : gradeCard ? (
-                      <motion.div key="gradecard" {...fadeInUp} className="space-y-4">
+                      <motion.div
+                        key="gradecard"
+                        {...fadeInUp}
+                        className="space-y-4"
+                      >
                         {gradeCard.gradecard.map((subject, index) => (
-                          <GradeCard key={subject.subjectcode} subject={subject} getGradeColor={getGradeColor} />
+                          <GradeCard
+                            key={subject.subjectcode}
+                            subject={subject}
+                            getGradeColor={getGradeColor}
+                          />
                         ))}
                       </motion.div>
                     ) : (
-                      <motion.div key="nodata" {...fadeInUp} className="text-center py-8 bg-[#21252B] dark:bg-gray-50 rounded-lg">
-                        <p>No grade card data available for this semester</p>
+                      <motion.div
+                        key="nodata"
+                        {...fadeInUp}
+                        className="text-center py-8 bg-[#21252B] dark:bg-gray-50 rounded-lg"
+                      >
+                        <p> No grade card data available for this semester </p>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -455,19 +567,31 @@ export default function Grades({
           <TabsContent value="marks">
             <motion.div {...fadeInUp} className="space-y-4">
               {marksSemesters.length === 0 ? (
-                <motion.div {...fadeInUp} className="text-center py-8 bg-[#21252B] dark:bg-gray-50 rounded-lg">
-                  <p className="text-xl">Marks data is not available yet</p>
-                  <p className="text-gray-400 dark:text-gray-600 mt-2">Please check back later</p>
+                <motion.div
+                  {...fadeInUp}
+                  className="text-center py-8 bg-[#21252B] dark:bg-gray-50 rounded-lg"
+                >
+                  <p className="text-xl"> Marks data is not available yet </p>
+                  <p className="text-gray-400 dark:text-gray-600 mt-2">
+                    {" "}
+                    Please check back later{" "}
+                  </p>
                 </motion.div>
               ) : (
                 <>
-                  <Select onValueChange={handleMarksSemesterChange} value={selectedMarksSem?.registration_id}>
+                  <Select
+                    onValueChange={handleMarksSemesterChange}
+                    value={selectedMarksSem?.registration_id}
+                  >
                     <SelectTrigger className="bg-[#21252B] dark:bg-gray-50 border-gray-700 dark:border-gray-300 text-white dark:text-black">
                       <SelectValue placeholder="Select semester" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#21252B] dark:bg-gray-50 border-gray-700 dark:border-gray-300 text-white dark:text-black">
                       {marksSemesters.map((sem) => (
-                        <SelectItem key={sem.registration_id} value={sem.registration_id}>
+                        <SelectItem
+                          key={sem.registration_id}
+                          value={sem.registration_id}
+                        >
                           {sem.registration_code}
                         </SelectItem>
                       ))}
@@ -482,17 +606,25 @@ export default function Grades({
                         className="flex items-center justify-center py-8 bg-[#21252B] dark:bg-gray-50 rounded-lg"
                       >
                         <Loader2 className="w-6 h-6 animate-spin mr-2" />
-                        <span>Loading marks data...</span>
+                        <span> Loading marks data... </span>
                       </motion.div>
                     ) : marksSemesterData && marksSemesterData.courses ? (
-                      <motion.div key="marksdata" {...fadeInUp} className="space-y-4">
+                      <motion.div
+                        key="marksdata"
+                        {...fadeInUp}
+                        className="space-y-4"
+                      >
                         {marksSemesterData.courses.map((course, index) => (
                           <MarksCard key={course.code} course={course} />
                         ))}
                       </motion.div>
                     ) : (
-                      <motion.div key="nodata" {...fadeInUp} className="text-center py-8 bg-[#21252B] dark:bg-gray-50 rounded-lg">
-                        <p>Select a semester to view marks</p>
+                      <motion.div
+                        key="nodata"
+                        {...fadeInUp}
+                        className="text-center py-8 bg-[#21252B] dark:bg-gray-50 rounded-lg"
+                      >
+                        <p> Select a semester to view marks </p>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -521,10 +653,16 @@ export default function Grades({
 
       <AnimatePresence>
         {isDownloadDialogOpen && (
-          <Dialog open={isDownloadDialogOpen} onOpenChange={setIsDownloadDialogOpen}>
+          <Dialog
+            open={isDownloadDialogOpen}
+            onOpenChange={setIsDownloadDialogOpen}
+          >
             <DialogContent className="bg-[#21252B] dark:bg-gray-50 text-white dark:text-black border-gray-700 dark:border-gray-300">
               <DialogHeader>
-                <DialogTitle className="text-xl font-semibold">Download Marks</DialogTitle>
+                <DialogTitle className="text-xl font-semibold">
+                  {" "}
+                  Download Marks{" "}
+                </DialogTitle>
               </DialogHeader>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -556,6 +694,5 @@ export default function Grades({
         )}
       </AnimatePresence>
     </motion.div>
-  )
+  );
 }
-
