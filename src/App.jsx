@@ -17,6 +17,8 @@ import Profile from "./components/Profile";
 import TimeTable from "./components/TimeTable";
 import "./App.css";
 import { ThemeProvider } from "./context/ThemeContext";
+import Analytics from "@vercel/analytics/react";
+
 
 import {
   WebPortal,
@@ -93,6 +95,7 @@ function AuthenticatedApp({ w, setIsAuthenticated }) {
 
   return (
     <div className="min-h-screen pb-14 select-none">
+      <Analytics />
       <div className="sticky top-0 z-30 bg-[#191c20] -mt-[2px]">
         <Header setIsAuthenticated={setIsAuthenticated} />
       </div>
