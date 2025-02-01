@@ -55,11 +55,11 @@ export default defineConfig({
             purpose: "maskable",
           },
           {
-            src: "pwa-icons/tire.svg",
+            src: "pwa-icons/circle.ico",
             sizes: "128x128 256x256",
           },
           {
-            src: "pwa-icons/wheel.svg",
+            src: "pwa-icons/circle.ico",
             sizes: "512x512",
           },
         ],

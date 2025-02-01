@@ -17,7 +17,7 @@ import Profile from "./components/Profile";
 import TimeTable from "./components/TimeTable";
 import "./App.css";
 import { ThemeProvider } from "./context/ThemeContext";
-import Analytics from "@vercel/analytics/react";
+import {Analytics} from "@vercel/analytics/react";
 
 
 import {
