@@ -9,7 +9,6 @@ function Badge({ children }) {
   )
 }
 
-
 export function SubjectInfoCard({ subject }) {
   const getComponentIconWithName = (type) => {
     switch (type) {
@@ -33,16 +32,16 @@ export function SubjectInfoCard({ subject }) {
     <div className="bg-[#21252b] dark:bg-white rounded-lg shadow-md p-4 mb-4 transition-all hover:shadow-lg">
       <div className="flex justify-between items-start">
         <div className="flex-1 mr-4">
-          <h2 className="text-lg font-semibold text-gray-200 dark:text-gray-800 mb-1">{subject.name}</h2>
+          <h2 className="text-sm md:text-lg font-semibold text-gray-200 dark:text-gray-800 mb-1">{subject.name}</h2>
           <div className="flex items-center space-x-2 mb-2">
-            <span className="text-sm text-gray-400 dark:text-gray-600">{subject.code}</span>
+            <span className="text-sm max-[390px]:text-xs font-semibold text-gray-400 dark:text-gray-600">{subject.code}</span>
             {subject.isAudit && (
               <Badge>Audit</Badge>
             )}
           </div>
           <div className="space-y-1">
             {subject.components.map((component, idx) => (
-                <div className="flex items-center text-sm text-gray-300 dark:text-gray-700">
+                <div key={idx} className="flex items-center text-sm max-[390px]:text-xs font-semibold text-gray-300 dark:text-gray-700">
                   {getComponentIconWithName(component.type)}
                   <span className="ml-2">{component.teacher}</span>
                 </div>
