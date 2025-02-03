@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://jaypeeportal.netlify.app/attendance</loc>
+    <loc>https://jportal2-0.vercel.app/attendance</loc>
     <lastmod>2025-02-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
   <url>
-    <loc>https://jaypeeportal.netlify.app/grades</loc>
+    <loc>https://jportal2-0.vercel.app/grades</loc>
     <lastmod>2025-02-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://jaypeeportal.netlify.app/exams</loc>
+    <loc>https://jportal2-0.vercel.app/exams</loc>
     <lastmod>2025-02-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://jaypeeportal.netlify.app/subjects</loc>
+    <loc>https://jportal2-0.vercel.app/subjects</loc>
     <lastmod>2025-02-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jaypeeportal.netlify.app/profile</loc>
+    <loc>https://jportal2-0.vercel.app/profile</loc>
     <lastmod>2025-02-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jaypeeportal.netlify.app/timetable</loc>
+    <loc>https://jportal2-0.vercel.app/timetable</loc>
     <lastmod>2025-02-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
