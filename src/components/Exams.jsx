@@ -1,64 +1,91 @@
-import { useEffect, useState } from "react"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+"use client"
 
-export default function Exams({ 
-  w, 
-  examSchedule, 
+import { useEffect, useState } from "react"
+import { Calendar, Clock, MapPin } from "lucide-react"
+
+export default function Exams({
+  w,
+  examSchedule,
   setExamSchedule,
   examSemesters,
   setExamSemesters,
   selectedExamSem,
   setSelectedExamSem,
   selectedExamEvent,
-  setSelectedExamEvent
+  setSelectedExamEvent,
 }) {
   const [examEvents, setExamEvents] = useState([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    // Fetch semesters on component mount
-    const fetchSemesters = async () => {
+    const fetchInitialData = async () => {
       if (examSemesters.length === 0) {
-        const examSems = await w.get_semesters_for_exam_events()
-        setExamSemesters(examSems)
+        setLoading(true)
+        try {
+          const examSems = await w.get_semesters_for_exam_events()
+          setExamSemesters(examSems)
+          
+          if (examSems.length > 0) {
+            const firstSemester = examSems[0]
+            setSelectedExamSem(firstSemester)
+            
+            const events = await w.get_exam_events(firstSemester)
+            setExamEvents(events)
+            
+            if (events.length > 0) {
+              const firstEvent = events[0]
+              setSelectedExamEvent(firstEvent)
+              
+              const response = await w.get_exam_schedule(firstEvent)
+              setExamSchedule({
+                [firstEvent.exam_event_id]: response.subjectinfo
+              })
+            }
+          }
+        } finally {
+          setLoading(false)
+        }
       }
     }
-    fetchSemesters()
-  }, [])
+    fetchInitialData()
+  }, [w, setExamSemesters, setSelectedExamSem, setSelectedExamEvent, setExamSchedule, examSemesters.length])
 
-  // Fetch exam events when semester is selected
-  const handleSemesterChange = async (value) => {
+  const handleSemesterChange = async (event) => {
+    const value = event.target.value
     setLoading(true)
     try {
-      const semester = examSemesters.find(sem => sem.registration_id === value)
+      const semester = examSemesters.find((sem) => sem.registration_id === value)
       setSelectedExamSem(semester)
       const events = await w.get_exam_events(semester)
       setExamEvents(events)
       setSelectedExamEvent(null)
-      setExamSchedule({}) // Clear the exam schedule when changing semester
+      setExamSchedule({})
+
+      if (events.length > 0) {
+        const firstEvent = events[0]
+        setSelectedExamEvent(firstEvent)
+        const response = await w.get_exam_schedule(firstEvent)
+        setExamSchedule({
+          [firstEvent.exam_event_id]: response.subjectinfo,
+        })
+      }
     } finally {
       setLoading(false)
     }
   }
 
-  // Fetch exam schedule when event is selected
-  const handleEventChange = async (value) => {
+  const handleEventChange = async (event) => {
+    const value = event.target.value
     setLoading(true)
     try {
-      const event = examEvents.find(evt => evt.exam_event_id === value)
-      setSelectedExamEvent(event)
-      
+      const selectedEvent = examEvents.find((evt) => evt.exam_event_id === value)
+      setSelectedExamEvent(selectedEvent)
+
       if (!examSchedule[value]) {
-        const response = await w.get_exam_schedule(event)
-        setExamSchedule(prev => ({
+        const response = await w.get_exam_schedule(selectedEvent)
+        setExamSchedule((prev) => ({
           ...prev,
-          [value]: response.subjectinfo
+          [value]: response.subjectinfo,
         }))
       }
     } finally {
@@ -68,105 +95,125 @@ export default function Exams({
 
   const currentSchedule = selectedExamEvent && examSchedule[selectedExamEvent.exam_event_id]
 
-  // Format date string to a more readable format
   const formatDate = (dateStr) => {
-    const [day, month, year] = dateStr.split('/')
-    return new Date(`${month}/${day}/${year}`).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    const [day, month, year] = dateStr.split("/")
+    return new Date(`${month}/${day}/${year}`).toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     })
   }
+
   return (
-    <div className="text-white dark:text-black font-sans text-sm max-[390px]:text-xs">
-      <div className="sticky top-14 bg-[#191c20] dark:bg-white z-20">
-        <div className="pt-2 pb-4 px-3">
-          <Select 
-            onValueChange={handleSemesterChange}
+    <div className="container mx-auto p-4 space-y-6">
+      <div className="bg-[#21252B] dark:bg-white shadow rounded-lg p-6">
+        <h2 className="text-xl font-bold mb-4 text-white dark:text-black">Exam Schedule</h2>
+        <div className="space-y-4">
+          <select
+            onChange={handleSemesterChange}
             value={selectedExamSem?.registration_id || ""}
+            className="w-full p-2 border rounded bg-[#21252B] text-white border-gray-600 dark:bg-white dark:text-black dark:border-gray-300"
           >
-            <SelectTrigger className="bg-[#191c20] dark:bg-white text-white dark:text-black border-white dark:border-black">
-              <SelectValue placeholder="Select semester">
-                {selectedExamSem?.registration_code || "Select semester"}
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent className="bg-[#191c20] dark:bg-white text-white dark:text-black border-white dark:border-black">
-              {examSemesters.map((sem) => (
-                <SelectItem key={sem.registration_id} value={sem.registration_id}>
-                  {sem.registration_code}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <option value="">Select semester</option>
+            {examSemesters.map((sem) => (
+              <option key={sem.registration_id} value={sem.registration_id}>
+                {sem.registration_code}
+              </option>
+            ))}
+          </select>
 
           {selectedExamSem && (
-            <div className="mt-2">
-              <Select 
-                onValueChange={handleEventChange}
-                value={selectedExamEvent?.exam_event_id || ""}
-              >
-                <SelectTrigger className="bg-[#191c20] dark:bg-white text-white dark:text-black border-white dark:border-black">
-                  <SelectValue placeholder="Select exam event">
-                    {selectedExamEvent?.exam_event_desc || "Select exam event"}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent className="bg-[#191c20] dark:bg-white text-white dark:text-black border-white dark:border-black">
-                  {examEvents.map((event) => (
-                    <SelectItem key={event.exam_event_id} value={event.exam_event_id}>
-                      {event.exam_event_desc}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <select
+              onChange={handleEventChange}
+              value={selectedExamEvent?.exam_event_id || ""}
+              className="w-full p-2 border rounded bg-[#21252B] text-white border-gray-600 dark:bg-white dark:text-black dark:border-gray-300"
+            >
+              <option value="">Select exam event</option>
+              {examEvents.map((event) => (
+                <option key={event.exam_event_id} value={event.exam_event_id}>
+                  {event.exam_event_desc}
+                </option>
+              ))}
+            </select>
           )}
         </div>
       </div>
 
-      <div className="px-3 pb-4">
-        {loading ? (
-          <div className="flex flex-row items-center justify-center py-4">
-            <div>Loading...</div>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle fill="#0BB108" stroke="#0BB108" stroke-width="15" r="15" cx="35" cy="100"><animate attributeName="cx" calcMode="spline" dur="2" values="35;165;165;35;35" keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1" repeatCount="indefinite" begin="0"></animate></circle><circle fill="#0BB108" stroke="#0BB108" stroke-width="15" opacity=".8" r="15" cx="35" cy="100"><animate attributeName="cx" calcMode="spline" dur="2" values="35;165;165;35;35" keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1" repeatCount="indefinite" begin="0.05"></animate></circle><circle fill="#0BB108" stroke="#0BB108" stroke-width="15" opacity=".6" r="15" cx="35" cy="100"><animate attributeName="cx" calcMode="spline" dur="2" values="35;165;165;35;35" keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1" repeatCount="indefinite" begin=".1"></animate></circle><circle fill="#0BB108" stroke="#0BB108" stroke-width="15" opacity=".4" r="15" cx="35" cy="100"><animate attributeName="cx" calcMode="spline" dur="2" values="35;165;165;35;35" keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1" repeatCount="indefinite" begin=".15"></animate></circle><circle fill="#0BB108" stroke="#0BB108" stroke-width="15" opacity=".2" r="15" cx="35" cy="100"><animate attributeName="cx" calcMode="spline" dur="2" values="35;165;165;35;35" keySplines="0 .1 .5 1;0 .1 .5 1;0 .1 .5 1;0 .1 .5 1" repeatCount="indefinite" begin=".2"></animate></circle></svg>
+      {loading ? (
+        <LoadingSkeleton />
+      ) : currentSchedule?.length > 0 ? (
+        <div className="space-y-4">
+          {currentSchedule.map((exam) => (
+            <ExamCard
+              key={`${exam.subjectcode}-${exam.datetime}-${exam.datetimefrom}`}
+              exam={exam}
+              formatDate={formatDate}
+            />
+          ))}
+        </div>
+      ) : selectedExamEvent ? (
+        <div className="bg-[#21252B] dark:bg-white shadow rounded-lg p-6 flex items-center justify-center h-32">
+          <p className="text-gray-400 dark:text-gray-500">No exam schedule available</p>
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
+function ExamCard({ exam, formatDate }) {
+  return (
+    <div className="bg-[#21252B] shadow rounded-lg p-6 dark:bg-white">
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <h3 className="font-semibold text-lg text-white dark:text-black">{exam.subjectdesc.split("(")[0].trim()}</h3>
+          <p className="text-sm text-gray-400 dark:text-gray-500">{exam.subjectcode}</p>
+        </div>
+        {(exam.roomcode || exam.seatno) && (
+          <div className="text-xl font-medium text-white dark:text-black">
+            {exam.roomcode && exam.seatno ? `${exam.roomcode}-${exam.seatno}` : exam.roomcode || exam.seatno}
           </div>
-        ) : currentSchedule?.length > 0 ? (
-          <div className="space-y-2 divide-y divide-muted">
-            {currentSchedule.map((exam) => {
-              return (
-                <div 
-                  key={`${exam.subjectcode}-${exam.datetime}-${exam.datetimefrom}`} 
-                  className="py-4 px-2"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-medium">
-                        {exam.subjectdesc.split('(')[0].trim()}
-                      </h3>
-                      <p className="text-sm text-gray-400 dark:text-gray-600">{exam.subjectcode}</p>
-                    </div>
-                    {(exam.roomcode || exam.seatno) && (
-                      <div className="text-2xl font-medium whitespace-nowrap">
-                        {exam.roomcode && exam.seatno 
-                          ? `${exam.roomcode}-${exam.seatno}`
-                          : exam.roomcode || exam.seatno}
-                      </div>
-                    )}
-                  </div>
-                  <div className="mt-2 text-sm text-white dark:text-black">
-                    <p>{formatDate(exam.datetime)}</p>
-                    <p>{exam.datetimeupto}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : selectedExamEvent ? (
-          <div className="flex items-center justify-center py-4">
-            No exam schedule available
-          </div>
-        ) : null}
+        )}
       </div>
+      <div className="space-y-2 text-sm text-gray-400 dark:text-gray-500">
+        <div className="flex items-center">
+          <Calendar className="mr-2 h-4 w-4 text-gray-400 dark:text-gray-500" />
+          <span>{formatDate(exam.datetime)}</span>
+        </div>
+        <div className="flex items-center">
+          <Clock className="mr-2 h-4 w-4 text-gray-400 dark:text-gray-500" />
+          <span>{exam.datetimeupto}</span>
+        </div>
+        {(exam.roomcode || exam.seatno) && (
+          <div className="flex items-center">
+            <MapPin className="mr-2 h-4 w-4 text-gray-400 dark:text-gray-500" />
+            <span>{exam.roomcode || exam.seatno}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function LoadingSkeleton() {
+  return (
+    <div className="space-y-4">
+      {[...Array(3)].map((_, i) => (
+        <div key={i} className="bg-white dark:bg-[#21252B] shadow rounded-lg p-6">
+          <div className="flex justify-between items-start mb-4">
+            <div className="space-y-2">
+              <div className="h-5 w-40 bg-gray-200 dark:bg-[#21252B] rounded"></div>
+              <div className="h-4 w-24 bg-gray-200 dark:bg-[#21252B] rounded"></div>
+            </div>
+            <div className="h-6 w-16 bg-gray-200 dark:bg-[#21252B] rounded"></div>
+          </div>
+          <div className="space-y-2">
+            <div className="h-4 w-full bg-gray-200 dark:bg-[#21252B] rounded"></div>
+            <div className="h-4 w-full bg-gray-200 dark:bg-[#21252B] rounded"></div>
+            <div className="h-4 w-full bg-gray-200 dark:bg-[#21252B] rounded"></div>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }

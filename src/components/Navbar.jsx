@@ -1,14 +1,15 @@
 import { NavLink, useLocation } from "react-router-dom"
-import { UserRound, GraduationCap, FileSpreadsheet, BookOpen, ClipboardList } from "lucide-react"
+import { ClipboardList } from "lucide-react"
 import { motion } from "framer-motion"
+import { Calendar, User, Book, FileText, ChartSpline } from "lucide-react"
 
 const navItems = [
   { name: "Attendance", path: "/attendance", icon: ClipboardList },
-  { name: "Grades", path: "/grades", icon: GraduationCap },
-  { name: "Exams", path: "/exams", icon: FileSpreadsheet },
-  { name: "Subjects", path: "/subjects", icon: BookOpen },
-  { name: "Profile", path: "/profile", icon: UserRound },
-  { name: "TimeTable", path: "/timetable", icon: UserRound },
+  { name: "Grades", path: "/grades", icon: ChartSpline },
+  { name: "Exams", path: "/exams", icon: FileText },
+  { name: "Subjects", path: "/subjects", icon: Book },
+  { name: "Profile", path: "/profile", icon: User },
+  { name: "TimeTable", path: "/timetable", icon: Calendar },
 ]
 
 export default function Navbar() {
@@ -31,7 +32,7 @@ export default function Navbar() {
                 to={item.path}
                 className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors ${
                   isActive
-                    ? "text-blue-500 dark:text-blue-600"
+                    ? "text-white dark:text-black"
                     : "text-gray-400 hover:text-gray-200 dark:text-gray-500 dark:hover:text-gray-800"
                 }`}
               >
@@ -52,7 +53,7 @@ export default function Navbar() {
                 </motion.span>
                 {isActive && (
                   <motion.div
-                    className="bg-blue-500 dark:bg-blue-600 rounded-lg z-[-1] opacity-20"
+                    className="bg-white dark:bg-black rounded-lg z-[-1] opacity-20"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 0.2 }}
                     exit={{ opacity: 0 }}

@@ -269,7 +269,7 @@ function App() {
           error.message.includes("Failed to fetch")
         ) {
           setError(
-            "Please check your internet connection. If connected, JIIT Web Portal server is temporarily unavailable."
+            "JIIT Web Portal server is temporarily unavailable."
           );
         } else {
           console.error("Auto-login failed:", error);
