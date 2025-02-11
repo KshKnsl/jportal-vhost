@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Calendar, Clock, MapPin } from "lucide-react"
+import { Calendar, Clock, MapPin, Armchair } from "lucide-react"
 
 export default function Exams({
   w,
@@ -104,7 +104,6 @@ export default function Exams({
       day: "numeric",
     })
   }
-
   return (
     <div className="container mx-auto p-4 space-y-6">
       <div className="bg-[#21252B] dark:bg-white shadow rounded-lg p-6">
@@ -113,7 +112,7 @@ export default function Exams({
           <select
             onChange={handleSemesterChange}
             value={selectedExamSem?.registration_id || ""}
-            className="w-full p-2 border rounded bg-[#21252B] text-white border-gray-600 dark:bg-white dark:text-black dark:border-gray-300"
+            className="w-full p-2 border rounded bg-[#21252B] text-white border-gray-600 dark:bg-white dark:text-black dark:border-gray-300 text-sm md:text-base"
           >
             <option value="">Select semester</option>
             {examSemesters.map((sem) => (
@@ -127,7 +126,7 @@ export default function Exams({
             <select
               onChange={handleEventChange}
               value={selectedExamEvent?.exam_event_id || ""}
-              className="w-full p-2 border rounded bg-[#21252B] text-white border-gray-600 dark:bg-white dark:text-black dark:border-gray-300"
+              className="w-full p-2 border rounded bg-[#21252B] text-white border-gray-600 dark:bg-white dark:text-black dark:border-gray-300 text-sm md:text-base"
             >
               <option value="">Select exam event</option>
               {examEvents.map((event) => (
@@ -163,14 +162,14 @@ export default function Exams({
 
 function ExamCard({ exam, formatDate }) {
   return (
-    <div className="bg-[#21252B] shadow rounded-lg p-6 dark:bg-white">
-      <div className="flex justify-between items-start mb-4">
+    <div className="bg-[#21252B] shadow rounded-lg p-4 dark:bg-white">
+      <div className="flex justify-between items-start mb-2">
         <div>
           <h3 className="font-semibold text-lg text-white dark:text-black">{exam.subjectdesc.split("(")[0].trim()}</h3>
           <p className="text-sm text-gray-400 dark:text-gray-500">{exam.subjectcode}</p>
         </div>
         {(exam.roomcode || exam.seatno) && (
-          <div className="text-xl font-medium text-white dark:text-black">
+          <div className="text-xl font-medium text-white dark:text-black whitespace-nowrap">
             {exam.roomcode && exam.seatno ? `${exam.roomcode}-${exam.seatno}` : exam.roomcode || exam.seatno}
           </div>
         )}
@@ -185,9 +184,19 @@ function ExamCard({ exam, formatDate }) {
           <span>{exam.datetimeupto}</span>
         </div>
         {(exam.roomcode || exam.seatno) && (
-          <div className="flex items-center">
-            <MapPin className="mr-2 h-4 w-4 text-gray-400 dark:text-gray-500" />
-            <span>{exam.roomcode || exam.seatno}</span>
+          <div className="flex items-center space-x-4">
+            {exam.roomcode && (
+              <div className="flex items-center">
+                <MapPin className="mr-2 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <span>{exam.roomcode}</span>
+              </div>
+            )}
+            {exam.seatno && (
+              <div className="flex items-center">
+                <Armchair className="mr-2 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <span>{exam.seatno}</span>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -199,18 +208,18 @@ function LoadingSkeleton() {
   return (
     <div className="space-y-4">
       {[...Array(3)].map((_, i) => (
-        <div key={i} className="bg-white dark:bg-[#21252B] shadow rounded-lg p-6">
+        <div key={i} className="bg-[#21252B] dark:bg-white shadow rounded-lg p-6">
           <div className="flex justify-between items-start mb-4">
             <div className="space-y-2">
-              <div className="h-5 w-40 bg-gray-200 dark:bg-[#21252B] rounded"></div>
-              <div className="h-4 w-24 bg-gray-200 dark:bg-[#21252B] rounded"></div>
+              <div className="h-5 w-40 bg-[#21252B] dark:bg-gray-200 rounded"></div>
+              <div className="h-4 w-24 bg-[#21252B] dark:bg-gray-200 rounded"></div>
             </div>
-            <div className="h-6 w-16 bg-gray-200 dark:bg-[#21252B] rounded"></div>
+            <div className="h-6 w-16 bg-[#21252B] dark:bg-gray-200 rounded"></div>
           </div>
           <div className="space-y-2">
-            <div className="h-4 w-full bg-gray-200 dark:bg-[#21252B] rounded"></div>
-            <div className="h-4 w-full bg-gray-200 dark:bg-[#21252B] rounded"></div>
-            <div className="h-4 w-full bg-gray-200 dark:bg-[#21252B] rounded"></div>
+            <div className="h-4 w-full bg-[#21252B] dark:bg-gray-200 rounded"></div>
+            <div className="h-4 w-full bg-[#21252B] dark:bg-gray-200 rounded"></div>
+            <div className="h-4 w-full bg-[#21252B] dark:bg-gray-200 rounded"></div>
           </div>
         </div>
       ))}
