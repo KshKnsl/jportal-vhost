@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Book, Users, Beaker } from 'lucide-react'
 
 function Badge({ children }) {
@@ -19,37 +19,28 @@ export function SubjectInfoCard({ subject }) {
     }
   }
 
-  const getComponentName = (type) => {
-    switch (type) {
-      case 'L': return 'Lecture'
-      case 'T': return 'Tutorial'
-      case 'P': return 'Practical'
-      default: return ''
-    }
-  }
-
   return (
-    <div className="bg-[#0C0E19] dark:bg-white rounded-lg shadow-md p-4 mb-4 transition-all hover:shadow-lg">
+    <div className="bg-[#0C0E19] dark:bg-white rounded-lg shadow-md p-3 mb-3 transition-all hover:shadow-lg">
       <div className="flex justify-between items-start">
-        <div className="flex-1 mr-4">
+        <div className="flex-1 mr-2">
           <h2 className="text-sm md:text-lg font-semibold text-gray-200 dark:text-gray-800 mb-1">{subject.name}</h2>
-          <div className="flex items-center space-x-2 mb-2">
-            <span className="text-sm max-[390px]:text-xs font-semibold text-gray-400 dark:text-gray-600">{subject.code}</span>
+          <div className="flex items-center space-x-2 mb-1">
+            <span className="text-sm max-[390px]:text-xs text-gray-400 dark:text-gray-600">{subject.code}</span>
             {subject.isAudit && (
               <Badge>Audit</Badge>
             )}
           </div>
           <div className="space-y-1">
             {subject.components.map((component, idx) => (
-                <div key={idx} className="flex items-center text-sm max-[390px]:text-xs font-semibold text-gray-300 dark:text-gray-700">
-                  {getComponentIconWithName(component.type)}
-                  <span className="ml-2">{component.teacher}</span>
-                </div>
+              <div key={idx} className="flex items-center text-sm max-[390px]:text-xs text-gray-300 dark:text-gray-700">
+                {getComponentIconWithName(component.type)}
+                <span className="ml-1">{component.teacher}</span>
+              </div>
             ))}
           </div>
         </div>
         <div className="flex flex-col items-end">
-          <span className="text-xl font-bold text-gray-200 dark:text-gray-800">
+          <span className="text-lg md:text-xl font-bold text-gray-200 dark:text-gray-800">
             {subject.credits.toFixed(1)}
           </span>
           <span className="text-xs text-gray-400 dark:text-gray-600">Credits</span>
