@@ -106,13 +106,13 @@ export default function Exams({
   }
   return (
     <div className="container mx-auto p-4 space-y-6">
-      <div className="bg-[#21252B] dark:bg-white shadow rounded-lg p-6">
+      <div className="bg-[#0C0E19] dark:bg-white shadow rounded-lg p-6">
         <h2 className="text-xl font-bold mb-4 text-white dark:text-black">Exam Schedule</h2>
         <div className="space-y-4">
           <select
             onChange={handleSemesterChange}
             value={selectedExamSem?.registration_id || ""}
-            className="w-full p-2 border rounded bg-[#21252B] text-white border-gray-600 dark:bg-white dark:text-black dark:border-gray-300 text-sm md:text-base"
+            className="w-full p-2 border rounded bg-[#0C0E19] text-white border-gray-600 dark:bg-white dark:text-black dark:border-gray-300 text-sm md:text-base"
           >
             <option value="">Select semester</option>
             {examSemesters.map((sem) => (
@@ -126,7 +126,7 @@ export default function Exams({
             <select
               onChange={handleEventChange}
               value={selectedExamEvent?.exam_event_id || ""}
-              className="w-full p-2 border rounded bg-[#21252B] text-white border-gray-600 dark:bg-white dark:text-black dark:border-gray-300 text-sm md:text-base"
+              className="w-full p-2 border rounded bg-[#0C0E19] text-white border-gray-600 dark:bg-white dark:text-black dark:border-gray-300 text-sm md:text-base"
             >
               <option value="">Select exam event</option>
               {examEvents.map((event) => (
@@ -152,7 +152,7 @@ export default function Exams({
           ))}
         </div>
       ) : selectedExamEvent ? (
-        <div className="bg-[#21252B] dark:bg-white shadow rounded-lg p-6 flex items-center justify-center h-32">
+        <div className="bg-[#0C0E19] dark:bg-white shadow rounded-lg p-6 flex items-center justify-center h-32">
           <p className="text-gray-400 dark:text-gray-500">No exam schedule available</p>
         </div>
       ) : null}
@@ -162,7 +162,7 @@ export default function Exams({
 
 function ExamCard({ exam, formatDate }) {
   return (
-    <div className="bg-[#21252B] shadow rounded-lg p-4 dark:bg-white">
+    <div className="bg-[#0C0E19] shadow rounded-lg p-4 dark:bg-white">
       <div className="flex justify-between items-start mb-2">
         <div>
           <h3 className="font-semibold text-lg text-white dark:text-black">{exam.subjectdesc.split("(")[0].trim()}</h3>
@@ -208,18 +208,18 @@ function LoadingSkeleton() {
   return (
     <div className="space-y-4">
       {[...Array(3)].map((_, i) => (
-        <div key={i} className="bg-[#21252B] dark:bg-white shadow rounded-lg p-6">
+        <div key={i} className="bg-[#0C0E19] dark:bg-white shadow rounded-lg p-6">
           <div className="flex justify-between items-start mb-4">
             <div className="space-y-2">
-              <div className="h-5 w-40 bg-[#21252B] dark:bg-gray-200 rounded"></div>
-              <div className="h-4 w-24 bg-[#21252B] dark:bg-gray-200 rounded"></div>
+              <div className="h-5 w-40 bg-[#0C0E19] dark:bg-gray-200 rounded"></div>
+              <div className="h-4 w-24 bg-[#0C0E19] dark:bg-gray-200 rounded"></div>
             </div>
-            <div className="h-6 w-16 bg-[#21252B] dark:bg-gray-200 rounded"></div>
+            <div className="h-6 w-16 bg-[#0C0E19] dark:bg-gray-200 rounded"></div>
           </div>
           <div className="space-y-2">
-            <div className="h-4 w-full bg-[#21252B] dark:bg-gray-200 rounded"></div>
-            <div className="h-4 w-full bg-[#21252B] dark:bg-gray-200 rounded"></div>
-            <div className="h-4 w-full bg-[#21252B] dark:bg-gray-200 rounded"></div>
+            <div className="h-4 w-full bg-[#0C0E19] dark:bg-gray-200 rounded"></div>
+            <div className="h-4 w-full bg-[#0C0E19] dark:bg-gray-200 rounded"></div>
+            <div className="h-4 w-full bg-[#0C0E19] dark:bg-gray-200 rounded"></div>
           </div>
         </div>
       ))}

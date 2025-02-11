@@ -104,7 +104,7 @@ export default function Login({ onLoginSuccess, w }) {
   }
   return (
     <div className="flex min-h-screen items-center justify-center dark:bg-gray-100 bg-gray-900">
-      <div className="w-full max-w-md space-y-6 p-6 dark:bg-white bg-[#21252b] rounded-lg">
+      <div className="w-full max-w-md space-y-6 p-6 dark:bg-white bg-[#0C0E19] rounded-lg">
         <div className="space-y-2 text-center dark:text-gray-900 text-white rounded-lg">
           <h1 className="text-2xl font-bold">Login</h1>
           <p>Enter your credentials to sign in</p>
@@ -144,7 +144,7 @@ export default function Login({ onLoginSuccess, w }) {
             <Button
               type="submit"
               variant="outline"
-              className="w-full dark:bg-gray-900 dark:text-white bg-white text-[#191c20]"
+              className="w-full dark:bg-gray-900 dark:text-white bg-white text-[black]"
               disabled={loginStatus.isLoading}
             >
               {loginStatus.isLoading ? "Signing in..." : "Sign in"}

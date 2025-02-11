@@ -121,16 +121,16 @@ export default function Subjects({
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="sticky top-14 dark:bg-white bg-[#191c20] z-20"
+        className="sticky top-14 dark:bg-white bg-[black] z-20"
       >
         <div className="py-2 px-3">
           <Select onValueChange={handleSemesterChange} value={selectedSem?.registration_id} disabled={loading}>
-            <SelectTrigger className="dark:bg-white bg-[#191c20] dark:text-black text-white dark:border-black border-white">
+            <SelectTrigger className="dark:bg-white bg-[black] dark:text-black text-white dark:border-black border-white">
               <SelectValue placeholder={loading ? "Loading semesters..." : "Select semester"}>
                 {selectedSem?.registration_code}
               </SelectValue>
             </SelectTrigger>
-            <SelectContent className="dark:bg-white bg-[#191c20] dark:text-black text-white dark:border-black border-white">
+            <SelectContent className="dark:bg-white bg-[black] dark:text-black text-white dark:border-black border-white">
               {semestersData?.semesters?.map((sem) => (
                 <SelectItem key={sem.registration_id} value={sem.registration_id}>
                   {sem.registration_code}

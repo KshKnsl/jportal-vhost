@@ -21,7 +21,7 @@ const Header = ({ setIsAuthenticated }) => {
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-[#191c20] mx-auto px-3 pt-4 pb-2 dark:bg-white shadow-md"
+      className="bg-[black] mx-auto px-3 pt-4 pb-2 dark:bg-white shadow-md"
     >
       <div className="container-fluid flex justify-between items-center">
         <motion.h1

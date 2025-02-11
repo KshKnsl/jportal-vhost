@@ -69,7 +69,7 @@ const AttendanceCard = ({
   return (
     <>
       <div
-        className="flex justify-between items-center py-1 cursor-pointer hover:bg-[#21252b] dark:border-gray-300 dark:hover:bg-gray-200/50"
+        className="flex justify-between items-center py-1 cursor-pointer hover:bg-[#0C0E19] dark:border-gray-300 dark:hover:bg-gray-200/50"
         onClick={handleClick}
       >
         <div className="flex-1 mr-4">
@@ -103,7 +103,7 @@ const AttendanceCard = ({
         setSelectedSubject(null);
         setSelectedDate(null);
       }}>
-        <SheetContent side="bottom" className="h-[70vh] bg-[#191c20] text-white border-0 overflow-hidden flex flex-col dark:bg-white dark:text-black">
+        <SheetContent side="bottom" className="h-[70vh] bg-[black] text-white border-0 overflow-hidden flex flex-col dark:bg-white dark:text-black">
           <SheetHeader>
             {/* <SheetTitle className="text-white dark:text-black">{}</SheetTitle> */}
           </SheetHeader>

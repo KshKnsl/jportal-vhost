@@ -41,8 +41,8 @@ export default defineConfig({
         description: "A web portal for students to view attendance and grades.",
         start_url: "/",
         display: "standalone",
-        background_color: "#191C20",
-        theme_color: "#191C20",
+        background_color: "black",
+        theme_color: "black",
         orientation: "portrait",
         icons: [
           {

@@ -16,7 +16,7 @@ export default function MarksCard({ course }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
       whileHover={{ scale: 1.02 }}
-      className="bg-[#191c20] dark:bg-white rounded-lg p-3 sm:p-4 border border-gray-700 dark:border-gray-300"
+      className="bg-[black] dark:bg-white rounded-lg p-3 sm:p-4 border border-gray-700 dark:border-gray-300"
     >
       <motion.div
         initial={{ opacity: 0 }}

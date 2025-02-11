@@ -96,7 +96,7 @@ function AuthenticatedApp({ w, setIsAuthenticated }) {
   return (
     <div className="min-h-screen pb-14 select-none">
       <Analytics />
-      <div className="sticky top-0 z-30 bg-[#191c20] -mt-[2px]">
+      <div className="sticky top-0 z-30 bg-[black] -mt-[2px]">
         <Header setIsAuthenticated={setIsAuthenticated} />
       </div>
       <Routes>
@@ -288,7 +288,7 @@ function App() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#191c20] text-white dark:bg-white dark:text-black">
+      <div className="min-h-screen flex items-center justify-center bg-[black] text-white dark:bg-white dark:text-black">
         Signing in...
       </div>
     );
@@ -297,7 +297,7 @@ function App() {
   return (
     <ThemeProvider value={{ themeMode, darkTheme, lightTheme }}>
       <Router>
-        <div className="min-h-screen bg-[#191c20] dark:bg-white dark:text-black select-none">
+        <div className="min-h-screen bg-[black] dark:bg-white dark:text-black select-none">
           {!isAuthenticated || !w.session ? (
             <Routes>
               <Route

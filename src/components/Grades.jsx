@@ -315,14 +315,14 @@ export default function Grades({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-[#191C20] dark:bg-white text-white dark:text-black pt-2 pb-4 px-3 font-sans text-sm max-[390px]:text-xs"
+      className="min-h-screen bg-[black] dark:bg-white text-white dark:text-black pt-2 pb-4 px-3 font-sans text-sm max-[390px]:text-xs"
     >
       <Tabs
         value={activeTab}
         onValueChange={setActiveTab}
         className="w-full max-w-4xl mx-auto"
       >
-        <TabsList className="grid w-full grid-cols-3 mb-4 bg-[#21252B] dark:bg-gray-50 rounded-lg p-1">
+        <TabsList className="grid w-full grid-cols-3 mb-4 bg-[#0C0E19] dark:bg-gray-50 rounded-lg p-1">
           <AnimatePresence mode="wait">
             {["overview", "semester", "marks"].map((tab) => (
               <TabsTrigger
@@ -349,7 +349,7 @@ export default function Grades({
               {gradesError ? (
                 <motion.div
                   {...fadeInUp}
-                  className="text-center py-8 bg-[#21252B] dark:bg-gray-50 rounded-lg"
+                  className="text-center py-8 bg-[#0C0E19] dark:bg-gray-50 rounded-lg"
                 >
                   <p className="text-xl text-red-400"> {gradesError} </p>
                   <p className="text-gray-400 dark:text-gray-600 mt-2">
@@ -361,7 +361,7 @@ export default function Grades({
                 <>
                   <motion.div
                     {...fadeInUp}
-                    className="bg-[#21252B] dark:bg-gray-50 rounded-lg p-4"
+                    className="bg-[#0C0E19] dark:bg-gray-50 rounded-lg p-4"
                   >
                     <h2 className="text-xl font-semibold mb-4">
                       {" "}
@@ -433,7 +433,7 @@ export default function Grades({
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className="bg-[#21252B] dark:bg-gray-50 rounded-lg p-4 flex justify-between items-center"
+                        className="bg-[#0C0E19] dark:bg-gray-50 rounded-lg p-4 flex justify-between items-center"
                       >
                         <div>
                           <h4 className="text-base md:text-lg font-semibold">
@@ -490,7 +490,7 @@ export default function Grades({
               {gradeCardSemesters.length === 0 ? (
                 <motion.div
                   {...fadeInUp}
-                  className="text-center py-8 bg-[#21252B] dark:bg-gray-50 rounded-lg"
+                  className="text-center py-8 bg-[#0C0E19] dark:bg-gray-50 rounded-lg"
                 >
                   <p className="text-xl"> Grade card is not available yet </p>
                   <p className="text-gray-400 dark:text-gray-600 mt-2">
@@ -504,7 +504,7 @@ export default function Grades({
                     onValueChange={handleSemesterChange}
                     value={selectedGradeCardSem?.registration_id}
                   >
-                    <SelectTrigger className="bg-[#21252B] dark:bg-gray-50 border-gray-700 dark:border-gray-300 text-white dark:text-black">
+                    <SelectTrigger className="bg-[#0C0E19] dark:bg-gray-50 border-gray-700 dark:border-gray-300 text-white dark:text-black">
                       <SelectValue
                         placeholder={
                           gradeCardLoading
@@ -513,7 +513,7 @@ export default function Grades({
                         }
                       />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#21252B] dark:bg-gray-50 border-gray-700 dark:border-gray-300 text-white dark:text-black">
+                    <SelectContent className="bg-[#0C0E19] dark:bg-gray-50 border-gray-700 dark:border-gray-300 text-white dark:text-black">
                       {gradeCardSemesters.map((sem) => (
                         <SelectItem
                           key={sem.registration_id}
@@ -530,7 +530,7 @@ export default function Grades({
                       <motion.div
                         key="loading"
                         {...fadeInUp}
-                        className="flex items-center justify-center py-8 bg-[#21252B] dark:bg-gray-50 rounded-lg"
+                        className="flex items-center justify-center py-8 bg-[#0C0E19] dark:bg-gray-50 rounded-lg"
                       >
                         <Loader2 className="w-6 h-6 animate-spin mr-2" />
                         <span> Loading subjects... </span>
@@ -553,7 +553,7 @@ export default function Grades({
                       <motion.div
                         key="nodata"
                         {...fadeInUp}
-                        className="text-center py-8 bg-[#21252B] dark:bg-gray-50 rounded-lg"
+                        className="text-center py-8 bg-[#0C0E19] dark:bg-gray-50 rounded-lg"
                       >
                         <p> No grade card data available for this semester </p>
                       </motion.div>
@@ -569,7 +569,7 @@ export default function Grades({
               {marksSemesters.length === 0 ? (
                 <motion.div
                   {...fadeInUp}
-                  className="text-center py-8 bg-[#21252B] dark:bg-gray-50 rounded-lg"
+                  className="text-center py-8 bg-[#0C0E19] dark:bg-gray-50 rounded-lg"
                 >
                   <p className="text-xl"> Marks data is not available yet </p>
                   <p className="text-gray-400 dark:text-gray-600 mt-2">
@@ -583,10 +583,10 @@ export default function Grades({
                     onValueChange={handleMarksSemesterChange}
                     value={selectedMarksSem?.registration_id}
                   >
-                    <SelectTrigger className="bg-[#21252B] dark:bg-gray-50 border-gray-700 dark:border-gray-300 text-white dark:text-black">
+                    <SelectTrigger className="bg-[#0C0E19] dark:bg-gray-50 border-gray-700 dark:border-gray-300 text-white dark:text-black">
                       <SelectValue placeholder="Select semester" />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#21252B] dark:bg-gray-50 border-gray-700 dark:border-gray-300 text-white dark:text-black">
+                    <SelectContent className="bg-[#0C0E19] dark:bg-gray-50 border-gray-700 dark:border-gray-300 text-white dark:text-black">
                       {marksSemesters.map((sem) => (
                         <SelectItem
                           key={sem.registration_id}
@@ -603,7 +603,7 @@ export default function Grades({
                       <motion.div
                         key="loading"
                         {...fadeInUp}
-                        className="flex items-center justify-center py-8 bg-[#21252B] dark:bg-gray-50 rounded-lg"
+                        className="flex items-center justify-center py-8 bg-[#0C0E19] dark:bg-gray-50 rounded-lg"
                       >
                         <Loader2 className="w-6 h-6 animate-spin mr-2" />
                         <span> Loading marks data... </span>
@@ -622,7 +622,7 @@ export default function Grades({
                       <motion.div
                         key="nodata"
                         {...fadeInUp}
-                        className="text-center py-8 bg-[#21252B] dark:bg-gray-50 rounded-lg"
+                        className="text-center py-8 bg-[#0C0E19] dark:bg-gray-50 rounded-lg"
                       >
                         <p> Select a semester to view marks </p>
                       </motion.div>
@@ -657,7 +657,7 @@ export default function Grades({
             open={isDownloadDialogOpen}
             onOpenChange={setIsDownloadDialogOpen}
           >
-            <DialogContent className="bg-[#21252B] dark:bg-gray-50 text-white dark:text-black border-gray-700 dark:border-gray-300">
+            <DialogContent className="bg-[#0C0E19] dark:bg-gray-50 text-white dark:text-black border-gray-700 dark:border-gray-300">
               <DialogHeader>
                 <DialogTitle className="text-xl font-semibold">
                   {" "}
