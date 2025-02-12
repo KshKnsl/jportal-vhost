@@ -103,55 +103,110 @@ export default function Login({ onLoginSuccess, w }) {
     }));
   }
   return (
-    <div className="flex min-h-screen items-center justify-center dark:bg-gray-100 bg-gray-900">
-      <div className="w-full max-w-md space-y-6 p-6 dark:bg-white bg-[#0C0E19] rounded-lg">
-        <div className="space-y-2 text-center dark:text-gray-900 text-white rounded-lg">
-          <h1 className="text-2xl font-bold">Login</h1>
-          <p>Enter your credentials to sign in</p>
-          {loginStatus.error && (
-            <p className="text-red-500">{loginStatus.error}</p>
-          )}
+    <div className="min-h-screen bg-black text-white dark:bg-gray-100 dark:text-gray-900">
+      {/* Header */}
+      <header className="bg-blue-900 dark:bg-blue-600 text-white py-2">
+        <div className="container mx-auto text-center flex flex-col md:flex-row gap-2 md:gap-6 px-4">
+          <h1 className="text-3xl font-bold">JIIT Portal</h1>
+          <p className="mt-2 md:mt-0">A modern interface for the JIIT web portal</p>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid gap-8">
+          {/* Login Form Section */}
+          <div className="bg-black dark:bg-white rounded-lg shadow-lg p-8 border-[1px]">
+            <h2 className="text-2xl font-bold text-white dark:text-gray-900 mb-6">Login</h2>
+            {loginStatus.error && (
+              <div className="bg-red-900/50 dark:bg-red-100 border border-red-600 dark:border-red-400 text-red-200 dark:text-red-700 px-4 py-3 rounded mb-4">
+                {loginStatus.error}
+              </div>
+            )}
+
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="enrollmentNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-white dark:text-gray-900">Enrollment Number</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Enter enrollment number" 
+                          className="bg-gray-700 dark:bg-white border-gray-600 dark:border-gray-300"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-white dark:text-gray-900">Password</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="password" 
+                          placeholder="Enter password"
+                          className="bg-gray-700 dark:bg-white border-gray-600 dark:border-gray-300"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="submit"
+                  className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+                  disabled={loginStatus.isLoading}
+                >
+                  {loginStatus.isLoading ? "Signing in..." : "Sign In"}
+                </Button>
+              </form>
+            </Form>
+          </div>
+
+          {/* Features Section */}
+          <div className="bg-black dark:bg-white rounded-lg shadow-lg p-8  border-[1px]">
+            <h2 className="text-2xl font-bold text-white dark:text-gray-900 mb-6">Features</h2>
+            <div className="space-y-6">
+              <div>
+                <ul className="list-disc list-inside space-y-2">
+                  <li>🔐 Passwordless login without captcha</li>
+                  <li>📊 Real-time attendance tracking</li>
+                  <li>📝 Exam schedule viewer</li>
+                  <li>📈 Grade management</li>
+                  <li>👀 SGPA/CGPA calculator</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Installation Guide</h3>
+                <div className="space-y-2">
+                  <p className="font-medium">Android:</p>
+                  <p>Press menu → Add to home screen</p>
+                  <p className="font-medium">iOS:</p>
+                  <p>Share → Add to home screen</p>
+                  <p className="font-medium">Windows:</p>
+                  <p>Click install icon in URL bar</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="enrollmentNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="dark:text-gray-900 text-white">Enrollment Number</FormLabel>
-                  <FormControl>
-                    <Input {...field} className="dark:bg-white bg-gray-700 dark:text-gray-900 text-white" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="dark:text-gray-900 text-white">Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} className="dark:bg-white bg-gray-700 dark:text-gray-900 text-white" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button
-              type="submit"
-              variant="outline"
-              className="w-full dark:bg-gray-900 dark:text-white bg-white text-[black]"
-              disabled={loginStatus.isLoading}
-            >
-              {loginStatus.isLoading ? "Signing in..." : "Sign in"}
-            </Button>
-          </form>
-        </Form>
+        {/* Footer */}
+        <footer className="mt-8 text-center text-gray-400 dark:text-gray-600">
+          <p>Created with ❤️ for JIIT students only</p>
+          <p className="text-sm mt-2">Not liable for attendance-related emotional damage 😅</p>
+        </footer>
       </div>
     </div>
-  )
+  );
 }
