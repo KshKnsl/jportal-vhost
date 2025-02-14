@@ -291,7 +291,7 @@ function App() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 text-white dark:bg-gradient-to-r dark:from-gray-800 dark:to-black dark:text-white">
       <div className="flex flex-col items-center">
-        <div className="animate-spin mb-4">
+        <div className="mb-4">
         <Loader2 className="w-8 h-8 animate-spin mr-2" />
         </div>
         <p className="text-lg font-semibold mb-2">Signing in...</p>
