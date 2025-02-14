@@ -35,7 +35,7 @@ export default function Profile({ w, profileData, setProfileData }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <Loader2 className="w-10 h-10 text-blue-500 animate-spin" />
+        <Loader2 className="w-10 h-10 text-white dark:text-black animate-spin" />
       </div>
     )
   }
@@ -87,7 +87,7 @@ export default function Profile({ w, profileData, setProfileData }) {
               whileTap={{ scale: 0.95 }}
               className={`flex-1 py-3 px-4 text-center font-medium ${
                 activeTab === tab
-                  ? "text-blue-500 border-b-2 border-blue-500"
+                  ? "text-white border-b-2 border-white dark:text-black dark:border-black"
                   : "text-gray-300 hover:text-gray-100 dark:text-gray-700 dark:hover:text-gray-900"
               }`}
               onClick={() => setActiveTab(tab)}

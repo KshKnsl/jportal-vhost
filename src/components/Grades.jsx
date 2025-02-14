@@ -266,15 +266,6 @@ export default function Grades({
     return gradeColors[grade] || "text-white";
   };
 
-  const handleDownloadMarks = async (semester) => {
-    try {
-      await w.download_marks(semester);
-      setIsDownloadDialogOpen(false);
-    } catch (err) {
-      console.error("Failed to download marks:", err);
-    }
-  };
-
   const handleMarksSemesterChange = async (value) => {
     try {
       const semester = marksSemesters.find(
@@ -309,6 +300,20 @@ export default function Grades({
     );
   }
 
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownloadMarks = async (semester) => {
+    setIsDownloading(true);
+    try {
+      await w.download_marks(semester);
+      setIsDownloadDialogOpen(false);
+    } catch (err) {
+      console.error("Failed to download marks:", err);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -328,7 +333,7 @@ export default function Grades({
               <TabsTrigger
                 key={tab}
                 value={tab}
-                className="bg-transparent data-[state=active]:bg-blue-600 dark:data-[state=active]:bg-blue-400 text-gray-300 dark:text-gray-700 data-[state=active]:text-white dark:data-[state=active]:text-black rounded-md transition-all duration-200"
+                className="bg-transparent data-[state=active]:bg-white dark:data-[state=active]:bg-black text-gray-300 dark:text-gray-700 data-[state=active]:text-black dark:data-[state=active]:text-white rounded-md transition-all duration-200"
               >
                 <motion.div
                   initial={{ y: 10, opacity: 0 }}
@@ -643,11 +648,16 @@ export default function Grades({
       >
         <Button
           variant="outline"
-          className="flex items-center gap-2 bg-blue-600 dark:bg-blue-400 hover:bg-blue-700 dark:hover:bg-blue-500 text-white dark:text-black border-none"
+          className="flex items-center gap-2 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-400 text-white dark:text-black border-none"
           onClick={() => setIsDownloadDialogOpen(true)}
+          disabled={isDownloading}
         >
-          <Download className="h-4 w-4" />
-          Download Marks
+          {isDownloading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Download className="h-4 w-4" />
+          )}
+          {isDownloading ? "Downloading..." : "Download Marks"}
         </Button>
       </motion.div>
 
@@ -680,8 +690,9 @@ export default function Grades({
                   >
                     <Button
                       variant="outline"
-                      className="w-full justify-between text-left bg-gray-700 dark:bg-gray-300 hover:bg-gray-600 dark:hover:bg-gray-400 border-none"
+                      className="w-full justify-between text-left bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-900 text-black dark:text-white border-none"
                       onClick={() => handleDownloadMarks(sem)}
+                      disabled={isDownloading}
                     >
                       {sem.registration_code}
                       <ChevronRight className="h-4 w-4" />

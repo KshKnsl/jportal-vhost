@@ -44,7 +44,7 @@ export default function CGPATargetCalculator({ currentCGPA, totalCredits, nextSe
             />
             <Button
               onClick={calculateRequiredSGPA}
-              className="bg-blue-600 dark:bg-blue-400 hover:bg-blue-700 dark:hover:bg-blue-500"
+              className="bg-white dark:bg-black hover:bg-gray-200 dark:hover:bg-gray-800 text-black dark:text-white"
             >
               Calculate
             </Button>
