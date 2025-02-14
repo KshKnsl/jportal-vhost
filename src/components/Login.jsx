@@ -1,20 +1,15 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { LoginError } from "https://cdn.jsdelivr.net/npm/jsjiit@0.0.20/dist/jsjiit.esm.js";
+import { LoginError } from "https://cdn.jsdelivr.net/npm/jsjiit@0.0.20/dist/jsjiit.esm.js"
+import { ChevronDown, ChevronUp, Lock, User } from "lucide-react"
 
-// Define the form schema
 const formSchema = z.object({
   enrollmentNumber: z.string({
     required_error: "Enrollment number is required",
@@ -28,10 +23,10 @@ export default function Login({ onLoginSuccess, w }) {
   const [loginStatus, setLoginStatus] = useState({
     isLoading: false,
     error: null,
-    credentials: null
-  });
+    credentials: null,
+  })
+  const [isFeatureOpen, setIsFeatureOpen] = useState(false)
 
-  // Initialize form
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,168 +35,179 @@ export default function Login({ onLoginSuccess, w }) {
     },
   })
 
-  // Handle side effects in useEffect
   useEffect(() => {
-    if (!loginStatus.credentials) return;
+    if (!loginStatus.credentials) return
 
     const performLogin = async () => {
       try {
-        await w.student_login(
-          loginStatus.credentials.enrollmentNumber,
-          loginStatus.credentials.password
-        );
+        await w.student_login(loginStatus.credentials.enrollmentNumber, loginStatus.credentials.password)
 
-        // Store credentials in localStorage
-        localStorage.setItem("username", loginStatus.credentials.enrollmentNumber);
-        localStorage.setItem("password", loginStatus.credentials.password);
+        localStorage.setItem("username", loginStatus.credentials.enrollmentNumber)
+        localStorage.setItem("password", loginStatus.credentials.password)
 
-        console.log("Login successful");
-        setLoginStatus(prev => ({
+        console.log("Login successful")
+        setLoginStatus((prev) => ({
           ...prev,
           isLoading: false,
           credentials: null,
-        }));
-        onLoginSuccess();
+        }))
+        onLoginSuccess()
       } catch (error) {
-        if (error instanceof LoginError && error.message.includes("JIIT Web Portal server is temporarily unavailable")) {
-          console.error("JIIT Web Portal server is temporarily unavailable")
-          setLoginStatus(prev => ({
-            ...prev,
-            isLoading: false,
-            error: "JIIT Web Portal server is temporarily unavailable. Please try again later.",
-            credentials: null,
-          }));
-        } else if (error instanceof LoginError && error.message.includes("Failed to fetch")) {
-          setLoginStatus(prev => ({
-            ...prev,
-            isLoading: false,
-            error: "Please check your internet connection. If connected, JIIT Web Portal server is unavailable.",
-            credentials: null,
-          }));
-        } else {
-          console.error("Login failed:", error);
-          setLoginStatus(prev => ({
-            ...prev,
-            isLoading: false,
-            error: "Login failed. Please check your credentials.",
-            credentials: null,
-          }));
-        }
+        console.error("Login failed:", error)
+        setLoginStatus((prev) => ({
+          ...prev,
+          isLoading: false,
+          error: error instanceof LoginError ? error.message : "Login failed. Please check your credentials.",
+          credentials: null,
+        }))
       }
-    };
+    }
 
-    setLoginStatus(prev => ({ ...prev, isLoading: true }));
-    performLogin();
-  }, [loginStatus.credentials, onLoginSuccess, w]);
+    setLoginStatus((prev) => ({ ...prev, isLoading: true }))
+    performLogin()
+  }, [loginStatus.credentials, onLoginSuccess, w])
 
-  // Clean form submission
   function onSubmit(values) {
-    setLoginStatus(prev => ({
+    setLoginStatus((prev) => ({
       ...prev,
       credentials: values,
-      error: null
-    }));
+      error: null,
+    }))
   }
+
   return (
-    <div className="min-h-screen bg-black text-white dark:bg-gray-100 dark:text-gray-900">
-      {/* Header */}
-      <header className="bg-blue-900 dark:bg-blue-600 text-white py-2">
-        <div className="container mx-auto text-center px-4">
-          <p className="mt-2 md:mt-0">JPortal-{'>'}Modern interface for the JIIT webkiosk</p>
+    <div className="min-h-screen bg-black text-white flex flex-col">
+      <header className="py-6 px-4 border-b border-white/10">
+        <div className="container mx-auto flex items-center justify-center">
+          <h1 className="text-3xl font-bold tracking-tighter">JPortal -{">"} Modern JIIT WebKiosk</h1>
         </div>
       </header>
 
-        <div className="container mx-auto px-4 min-h-screen flex items-center justify-center">
-          <div className="grid gap-8 w-full max-w-md">
-              <div className="bg-black dark:bg-white rounded-lg shadow-lg p-8 border-[1px]">
-              <h2 className="text-2xl font-bold text-white dark:text-gray-900 mb-6">Login</h2>
-              {loginStatus.error && (
-            <div className="bg-red-900/50 dark:bg-red-100 border border-red-600 dark:border-red-400 text-red-200 dark:text-red-700 px-4 py-3 rounded mb-4">
-            {loginStatus.error}
-            </div>
-              )}
-
-              <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="enrollmentNumber"
-              render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-white dark:text-gray-900">Enrollment Number</FormLabel>
-                <FormControl>
-                <Input 
-              placeholder="Enter enrollment number" 
-              className="bg-gray-700 dark:bg-white border-gray-600 dark:border-gray-300"
-              {...field} 
-                />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-white dark:text-gray-900">Password</FormLabel>
-                <FormControl>
-                <Input 
-              type="password" 
-              placeholder="Enter password"
-              className="bg-gray-700 dark:bg-white border-gray-600 dark:border-gray-300"
-              {...field} 
-                />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-              )}
-            />
-            <Button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
-              disabled={loginStatus.isLoading}
-            >
-              {loginStatus.isLoading ? "Signing in..." : "Sign In"}
-            </Button>
-            </form>
-              </Form>
+      <main className="flex-grow container mx-auto px-4 py-12 flex flex-col md:flex-row items-center justify-center gap-12">
+        <div className="w-full max-w-md">
+          <div className="bg-white/5 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-white/10">
+            <h2 className="text-2xl font-bold mb-6">Login to Your WebKiosk  Account</h2>
+            {loginStatus.error && (
+              <div className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg mb-6">
+                {loginStatus.error}
               </div>
+            )}
 
-              {/* Features Section */}
-                <details className="bg-black dark:bg-white rounded-lg shadow-lg p-4 border-[1px]">
-                <summary className="text-2xl font-bold text-white dark:text-gray-900 cursor-pointer">Features</summary>
-                <div className="space-y-6">
-                  <div>
-                  <ul className="list-disc list-inside space-y-2">
-                    <li>🔐 Passwordless login without captcha</li>
-                    <li>📊 Real-time attendance tracking</li>
-                    <li>📝 Exam schedule viewer</li>
-                    <li>📈 Grade management</li>
-                    <li>👀 SGPA/CGPA calculator</li>
-                  </ul>
-                  </div>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="enrollmentNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-white/80">Enrollment Number</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            placeholder="Enter enrollment number"
+                            className="bg-white/5 border-white/10 text-white pl-10"
+                            {...field}
+                          />
+                          <User
+                            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40"
+                            size={18}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-white/80">Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            type="password"
+                            placeholder="Enter password"
+                            className="bg-white/5 border-white/10 text-white pl-10"
+                            {...field}
+                          />
+                          <Lock
+                            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40"
+                            size={18}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="submit"
+                  className="w-full bg-white text-black hover:bg-white/90 transition-colors"
+                  disabled={loginStatus.isLoading}
+                >
+                  {loginStatus.isLoading ? "Signing in..." : "Sign In"}
+                </Button>
+              </form>
+            </Form>
+          </div>
+        </div>
 
-                  <div>
-                  <h3 className="text-lg font-semibold mb-2">Installation Guide</h3>
+        <div className="w-full max-w-md">
+          <div className="bg-white/5 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-white/10">
+            <button
+              onClick={() => setIsFeatureOpen(!isFeatureOpen)}
+              className="flex justify-between items-center w-full text-left"
+            >
+              <h2 className="text-2xl font-bold">Features</h2>
+              {isFeatureOpen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+            </button>
+            {isFeatureOpen && (
+              <div className="mt-6 space-y-6 text-white/80">
+                <ul className="space-y-2">
+                  <li className="flex items-center">
+                    <span className="mr-2">🔐</span> Passwordless login without captcha
+                  </li>
+                  <li className="flex items-center">
+                    <span className="mr-2">📊</span> Real-time attendance tracking
+                  </li>
+                  <li className="flex items-center">
+                    <span className="mr-2">📝</span> Exam schedule viewer
+                  </li>
+                  <li className="flex items-center">
+                    <span className="mr-2">📈</span> Grade management
+                  </li>
+                  <li className="flex items-center">
+                    <span className="mr-2">👀</span> SGPA/CGPA calculator
+                  </li>
+                </ul>
+
+                <div>
+                  <h3 className="text-lg font-semibold mb-2 text-white">Installation Guide</h3>
                   <div className="space-y-2">
-                    <p className="font-medium">Android:</p>
-                    <p>Press menu → Add to home screen</p>
-                    <p className="font-medium">iOS:</p>
-                    <p>Share → Add to home screen</p>
-                    <p className="font-medium">Windows:</p>
-                    <p>Click install icon in URL bar</p>
-                  </div>
+                    <p>
+                      <span className="font-medium">Android:</span> Press menu → Add to home screen
+                    </p>
+                    <p>
+                      <span className="font-medium">iOS:</span> Share → Add to home screen
+                    </p>
+                    <p>
+                      <span className="font-medium">Windows:</span> Click install icon in URL bar
+                    </p>
                   </div>
                 </div>
-                </details>
-        <footer className="mt-8 text-center text-gray-400 dark:text-gray-600">
-          <p>Created with ❤️ for JIIT students only</p>
-          <p className="text-sm mt-2">Not liable for attendance-related emotional damage 😅</p>
-        </footer>
-      </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
+
+      <footer className="py-6 text-center text-white/40">
+        <p>Created with ❤️ for JIIT students only</p>
+        <p className="text-sm mt-2">Not liable for attendance-related emotional damage 😅</p>
+      </footer>
     </div>
-    </div>
-  );
+  )
 }
+
