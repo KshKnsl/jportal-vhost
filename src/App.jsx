@@ -18,6 +18,7 @@ import TimeTable from "./components/TimeTable";
 import "./App.css";
 import { ThemeProvider } from "./context/ThemeContext";
 import {Analytics} from "@vercel/analytics/react";
+import {Loader2} from "lucide-react";
 
 
 import {
@@ -291,9 +292,7 @@ function App() {
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 text-white dark:bg-gradient-to-r dark:from-gray-800 dark:to-black dark:text-white">
       <div className="flex flex-col items-center">
         <div className="animate-spin mb-4">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v4m0 8v4m8-8h-4m-8 0H4m16.364-4.364l-2.828 2.828M6.343 6.343L3.515 9.172m16.364 9.192l-2.828-2.828M6.343 17.657l-2.828-2.828" />
-        </svg>
+        <Loader2 className="w-8 h-8 animate-spin mr-2" />
         </div>
         <p className="text-lg font-semibold mb-2">Signing in...</p>
         <p className="text-sm">Welcome to JPortal</p>
