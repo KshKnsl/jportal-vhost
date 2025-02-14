@@ -51,7 +51,7 @@ export default function Profile({ w, profileData, setProfileData }) {
         initial={{ y: -50 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 100 }}
-        className="bg-[#0C0E19] dark:bg-white shadow rounded-lg p-6"
+        className="bg-[#0B0B0D] dark:bg-white shadow rounded-lg p-6"
       >
         <div className="flex flex-col sm:flex-row items-center gap-4">
        
@@ -78,7 +78,7 @@ export default function Profile({ w, profileData, setProfileData }) {
         </div>
       </motion.div>
 
-      <div className="bg-[#0C0E19] dark:bg-white shadow rounded-lg">
+      <div className="bg-[#0B0B0D] dark:bg-white shadow rounded-lg">
         <div className="flex flex-wrap border-b border-gray-700 dark:border-gray-200">
           {["personal", "academic", "contact", "education"].map((tab) => (
             <motion.button

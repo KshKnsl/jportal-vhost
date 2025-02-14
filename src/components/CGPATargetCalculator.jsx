@@ -22,7 +22,7 @@ export default function CGPATargetCalculator({ currentCGPA, totalCredits, nextSe
   }
 
   return (
-    <div className="bg-[#0C0E19] dark:bg-gray-50 p-4 space-y-4">
+    <div className="bg-[#0B0B0D] dark:bg-gray-50 p-4 space-y-4">
       <h3 className="text-lg font-semibold flex items-center gap-2">
         <Calculator className="w-5 h-5" />
         CGPA Target Calculator

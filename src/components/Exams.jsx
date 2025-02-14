@@ -2,6 +2,13 @@
 
 import { useEffect, useState } from "react"
 import { Calendar, Clock, MapPin, Armchair } from "lucide-react"
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select"
 
 export default function Exams({
   w,
@@ -50,8 +57,7 @@ export default function Exams({
     fetchInitialData()
   }, [w, setExamSemesters, setSelectedExamSem, setSelectedExamEvent, setExamSchedule, examSemesters.length])
 
-  const handleSemesterChange = async (event) => {
-    const value = event.target.value
+  const handleSemesterChange = async (value) => {
     setLoading(true)
     try {
       const semester = examSemesters.find((sem) => sem.registration_id === value)
@@ -74,8 +80,7 @@ export default function Exams({
     }
   }
 
-  const handleEventChange = async (event) => {
-    const value = event.target.value
+  const handleEventChange = async (value) => {
     setLoading(true)
     try {
       const selectedEvent = examEvents.find((evt) => evt.exam_event_id === value)
@@ -104,65 +109,93 @@ export default function Exams({
       day: "numeric",
     })
   }
+
+  const isPastExam = (exam) => {
+    const [day, month, year] = exam.datetime.split("/")
+    const examDate = new Date(`${month}/${day}/${year}`)
+    return examDate < new Date()
+  }
+
+  const pastExams = currentSchedule?.filter(isPastExam) || []
+  const upcomingExams = currentSchedule?.filter((exam) => !isPastExam(exam)) || []
+
   return (
     <div className="container mx-auto p-4 space-y-6">
-      <div className="bg-[#0C0E19] dark:bg-white shadow rounded-lg p-6">
+      <div className="bg-[#0B0B0D] dark:bg-white shadow rounded-lg p-6">
         <h2 className="text-xl font-bold mb-4 text-white dark:text-black">Exam Schedule</h2>
         <div className="space-y-4">
-          <select
-            onChange={handleSemesterChange}
-            value={selectedExamSem?.registration_id || ""}
-            className="w-full p-2 border rounded bg-[#0C0E19] text-white border-gray-600 dark:bg-white dark:text-black dark:border-gray-300 text-sm md:text-base"
-          >
-            <option value="">Select semester</option>
-            {examSemesters.map((sem) => (
-              <option key={sem.registration_id} value={sem.registration_id}>
-                {sem.registration_code}
-              </option>
-            ))}
-          </select>
+          <Select onValueChange={handleSemesterChange} value={selectedExamSem?.registration_id || ""}>
+            <SelectTrigger className="w-full p-2 border rounded bg-[#0B0B0D] text-white border-gray-600 dark:bg-white dark:text-black dark:border-gray-300 text-sm md:text-base">
+              <SelectValue placeholder="Select semester" />
+            </SelectTrigger>
+            <SelectContent>
+              {examSemesters.map((sem) => (
+                <SelectItem key={sem.registration_id} value={sem.registration_id}>
+                  {sem.registration_code}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
           {selectedExamSem && (
-            <select
-              onChange={handleEventChange}
-              value={selectedExamEvent?.exam_event_id || ""}
-              className="w-full p-2 border rounded bg-[#0C0E19] text-white border-gray-600 dark:bg-white dark:text-black dark:border-gray-300 text-sm md:text-base"
-            >
-              <option value="">Select exam event</option>
-              {examEvents.map((event) => (
-                <option key={event.exam_event_id} value={event.exam_event_id}>
-                  {event.exam_event_desc}
-                </option>
-              ))}
-            </select>
+            <Select onValueChange={handleEventChange} value={selectedExamEvent?.exam_event_id || ""}>
+              <SelectTrigger className="w-full p-2 border rounded bg-[#0B0B0D] text-white border-gray-600 dark:bg-white dark:text-black dark:border-gray-300 text-sm md:text-base">
+                <SelectValue placeholder="Select exam event" />
+              </SelectTrigger>
+              <SelectContent>
+                {examEvents.map((event) => (
+                  <SelectItem key={event.exam_event_id} value={event.exam_event_id}>
+                    {event.exam_event_desc}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           )}
         </div>
       </div>
 
       {loading ? (
         <LoadingSkeleton />
-      ) : currentSchedule?.length > 0 ? (
-        <div className="space-y-4">
-          {currentSchedule.map((exam) => (
-            <ExamCard
-              key={`${exam.subjectcode}-${exam.datetime}-${exam.datetimefrom}`}
-              exam={exam}
-              formatDate={formatDate}
-            />
-          ))}
-        </div>
-      ) : selectedExamEvent ? (
-        <div className="bg-[#0C0E19] dark:bg-white shadow rounded-lg p-6 flex items-center justify-center h-32">
-          <p className="text-gray-400 dark:text-gray-500">No exam schedule available</p>
-        </div>
-      ) : null}
+      ) : (
+        <>
+          {upcomingExams.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-white dark:text-black">Upcoming Exams</h3>
+              {upcomingExams.map((exam) => (
+                <ExamCard
+                  key={`${exam.subjectcode}-${exam.datetime}-${exam.datetimefrom}`}
+                  exam={exam}
+                  formatDate={formatDate}
+                />
+              ))}
+            </div>
+          )}
+          {pastExams.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-white dark:text-black">Past Exams</h3>
+              {pastExams.map((exam) => (
+                <ExamCard
+                  key={`${exam.subjectcode}-${exam.datetime}-${exam.datetimefrom}`}
+                  exam={exam}
+                  formatDate={formatDate}
+                />
+              ))}
+            </div>
+          )}
+          {selectedExamEvent && upcomingExams.length === 0 && pastExams.length === 0 && (
+            <div className="bg-[#0B0B0D] dark:bg-white shadow rounded-lg p-6 flex items-center justify-center h-32">
+              <p className="text-gray-400 dark:text-gray-500">No exam schedule available</p>
+            </div>
+          )}
+        </>
+      )}
     </div>
   )
 }
 
 function ExamCard({ exam, formatDate }) {
   return (
-    <div className="bg-[#0C0E19] shadow rounded-lg p-4 dark:bg-white">
+    <div className="bg-[#0B0B0D] shadow rounded-lg p-4 dark:bg-white">
       <div className="flex justify-between items-start mb-2">
         <div>
           <h3 className="font-semibold text-lg text-white dark:text-black">{exam.subjectdesc.split("(")[0].trim()}</h3>
@@ -208,18 +241,18 @@ function LoadingSkeleton() {
   return (
     <div className="space-y-4">
       {[...Array(3)].map((_, i) => (
-        <div key={i} className="bg-[#0C0E19] dark:bg-white shadow rounded-lg p-6">
+        <div key={i} className="bg-[#0B0B0D] dark:bg-white shadow rounded-lg p-6">
           <div className="flex justify-between items-start mb-4">
             <div className="space-y-2">
-              <div className="h-5 w-40 bg-[#0C0E19] dark:bg-gray-200 rounded"></div>
-              <div className="h-4 w-24 bg-[#0C0E19] dark:bg-gray-200 rounded"></div>
+              <div className="h-5 w-40 bg-[#0B0B0D] dark:bg-gray-200 rounded"></div>
+              <div className="h-4 w-24 bg-[#0B0B0D] dark:bg-gray-200 rounded"></div>
             </div>
-            <div className="h-6 w-16 bg-[#0C0E19] dark:bg-gray-200 rounded"></div>
+            <div className="h-6 w-16 bg-[#0B0B0D] dark:bg-gray-200 rounded"></div>
           </div>
           <div className="space-y-2">
-            <div className="h-4 w-full bg-[#0C0E19] dark:bg-gray-200 rounded"></div>
-            <div className="h-4 w-full bg-[#0C0E19] dark:bg-gray-200 rounded"></div>
-            <div className="h-4 w-full bg-[#0C0E19] dark:bg-gray-200 rounded"></div>
+            <div className="h-4 w-full bg-[#0B0B0D] dark:bg-gray-200 rounded"></div>
+            <div className="h-4 w-full bg-[#0B0B0D] dark:bg-gray-200 rounded"></div>
+            <div className="h-4 w-full bg-[#0B0B0D] dark:bg-gray-200 rounded"></div>
           </div>
         </div>
       ))}

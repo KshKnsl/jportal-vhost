@@ -7,7 +7,7 @@ const GradeCard = ({ subject, getGradeColor }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="bg-[#0C0E19] rounded-lg p-4 shadow-md dark:bg-gray-50"
+      className="bg-[#0B0B0D] rounded-lg p-4 shadow-md dark:bg-gray-50"
     >
       <div className="flex justify-between items-center py-1">
         <div className="flex-1 mr-4">
