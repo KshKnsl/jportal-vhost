@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -83,7 +81,7 @@ export default function Login({ onLoginSuccess, w }) {
         </div>
       </header>
 
-      <main className="flex-grow container mx-auto px-4 py-12 flex flex-col md:flex-row items-center justify-center gap-12">
+      <main className="flex-grow container mx-auto px-4 py-12 flex flex-col items-center justify-center gap-12">
         <div className="w-full max-w-md">
           <div className="bg-white/5 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-white/10">
             <h2 className="text-2xl font-bold mb-6">Login to Your WebKiosk  Account</h2>

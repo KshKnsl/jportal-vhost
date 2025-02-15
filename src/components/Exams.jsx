@@ -2,13 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Calendar, Clock, MapPin, Armchair } from "lucide-react"
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function Exams({
   w,
@@ -31,23 +25,35 @@ export default function Exams({
         try {
           const examSems = await w.get_semesters_for_exam_events()
           setExamSemesters(examSems)
-          
+
           if (examSems.length > 0) {
             const firstSemester = examSems[0]
             setSelectedExamSem(firstSemester)
-            
+
             const events = await w.get_exam_events(firstSemester)
             setExamEvents(events)
-            
+
             if (events.length > 0) {
               const firstEvent = events[0]
               setSelectedExamEvent(firstEvent)
-              
+
               const response = await w.get_exam_schedule(firstEvent)
               setExamSchedule({
-                [firstEvent.exam_event_id]: response.subjectinfo
+                [firstEvent.exam_event_id]: response.subjectinfo,
               })
             }
+          }
+        } finally {
+          setLoading(false)
+        }
+      } else if (selectedExamSem && examEvents.length === 0) {
+        // Fetch exam events if they're not available
+        setLoading(true)
+        try {
+          const events = await w.get_exam_events(selectedExamSem)
+          setExamEvents(events)
+          if (events.length > 0 && !selectedExamEvent) {
+            setSelectedExamEvent(events[0])
           }
         } finally {
           setLoading(false)
@@ -55,7 +61,17 @@ export default function Exams({
       }
     }
     fetchInitialData()
-  }, [w, setExamSemesters, setSelectedExamSem, setSelectedExamEvent, setExamSchedule, examSemesters.length])
+  }, [
+    w,
+    setExamSemesters,
+    setSelectedExamSem,
+    setSelectedExamEvent,
+    setExamSchedule,
+    examSemesters,
+    selectedExamSem,
+    examEvents.length,
+    selectedExamEvent,
+  ])
 
   const handleSemesterChange = async (value) => {
     setLoading(true)
@@ -110,22 +126,13 @@ export default function Exams({
     })
   }
 
-  const isPastExam = (exam) => {
-    const [day, month, year] = exam.datetime.split("/")
-    const examDate = new Date(`${month}/${day}/${year}`)
-    return examDate < new Date()
-  }
-
-  const pastExams = currentSchedule?.filter(isPastExam) || []
-  const upcomingExams = currentSchedule?.filter((exam) => !isPastExam(exam)) || []
-
   return (
     <div className="container mx-auto p-4 space-y-6">
-      <div className="bg-[#0B0B0D] dark:bg-white shadow rounded-lg p-6">
-        <h2 className="text-xl font-bold mb-4 text-white dark:text-black">Exam Schedule</h2>
+      <div className="bg-black dark:bg-white shadow rounded-lg p-6">
+        <h2 className="text-2xl font-bold mb-4 text-white dark:text-black">Exam Schedule</h2>
         <div className="space-y-4">
           <Select onValueChange={handleSemesterChange} value={selectedExamSem?.registration_id || ""}>
-            <SelectTrigger className="w-full p-2 border rounded bg-[#0B0B0D] text-white border-gray-600 dark:bg-white dark:text-black dark:border-gray-300 text-sm md:text-base">
+            <SelectTrigger className="w-full bg-[#0B0B0D] text-white dark:bg-white dark:text-black border-gray-700 dark:border-gray-300">
               <SelectValue placeholder="Select semester" />
             </SelectTrigger>
             <SelectContent>
@@ -139,7 +146,7 @@ export default function Exams({
 
           {selectedExamSem && (
             <Select onValueChange={handleEventChange} value={selectedExamEvent?.exam_event_id || ""}>
-              <SelectTrigger className="w-full p-2 border rounded bg-[#0B0B0D] text-white border-gray-600 dark:bg-white dark:text-black dark:border-gray-300 text-sm md:text-base">
+              <SelectTrigger className="w-full bg-[#0B0B0D] text-white dark:bg-white dark:text-black border-gray-700 dark:border-gray-300">
                 <SelectValue placeholder="Select exam event" />
               </SelectTrigger>
               <SelectContent>
@@ -156,49 +163,31 @@ export default function Exams({
 
       {loading ? (
         <LoadingSkeleton />
-      ) : (
-        <>
-          {upcomingExams.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-white dark:text-black">Upcoming Exams</h3>
-              {upcomingExams.map((exam) => (
-                <ExamCard
-                  key={`${exam.subjectcode}-${exam.datetime}-${exam.datetimefrom}`}
-                  exam={exam}
-                  formatDate={formatDate}
-                />
-              ))}
-            </div>
-          )}
-          {pastExams.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-white dark:text-black">Past Exams</h3>
-              {pastExams.map((exam) => (
-                <ExamCard
-                  key={`${exam.subjectcode}-${exam.datetime}-${exam.datetimefrom}`}
-                  exam={exam}
-                  formatDate={formatDate}
-                />
-              ))}
-            </div>
-          )}
-          {selectedExamEvent && upcomingExams.length === 0 && pastExams.length === 0 && (
-            <div className="bg-[#0B0B0D] dark:bg-white shadow rounded-lg p-6 flex items-center justify-center h-32">
-              <p className="text-gray-400 dark:text-gray-500">No exam schedule available</p>
-            </div>
-          )}
-        </>
-      )}
+      ) : currentSchedule?.length > 0 ? (
+        <div className="space-y-4">
+          {currentSchedule.map((exam) => (
+            <ExamCard
+              key={`${exam.subjectcode}-${exam.datetime}-${exam.datetimefrom}`}
+              exam={exam}
+              formatDate={formatDate}
+            />
+          ))}
+        </div>
+      ) : selectedExamEvent ? (
+        <div className="bg-black dark:bg-white shadow rounded-lg p-6 flex items-center justify-center h-32">
+          <p className="text-gray-400 dark:text-gray-500">No exam schedule available</p>
+        </div>
+      ) : null}
     </div>
   )
 }
 
 function ExamCard({ exam, formatDate }) {
   return (
-    <div className="bg-[#0B0B0D] shadow rounded-lg p-4 dark:bg-white">
-      <div className="flex justify-between items-start mb-2">
+    <div className="bg-black dark:bg-white shadow rounded-lg p-6">
+      <div className="flex justify-between items-start mb-4">
         <div>
-          <h3 className="font-semibold text-lg text-white dark:text-black">{exam.subjectdesc.split("(")[0].trim()}</h3>
+          <h3 className="font-semibold text-xl text-white dark:text-black">{exam.subjectdesc.split("(")[0].trim()}</h3>
           <p className="text-sm text-gray-400 dark:text-gray-500">{exam.subjectcode}</p>
         </div>
         {(exam.roomcode || exam.seatno) && (
@@ -207,26 +196,26 @@ function ExamCard({ exam, formatDate }) {
           </div>
         )}
       </div>
-      <div className="space-y-2 text-sm text-gray-400 dark:text-gray-500">
+      <div className="space-y-3 text-sm text-gray-300 dark:text-gray-600">
         <div className="flex items-center">
-          <Calendar className="mr-2 h-4 w-4 text-gray-400 dark:text-gray-500" />
+          <Calendar className="mr-2 h-5 w-5 text-gray-400 dark:text-gray-500" />
           <span>{formatDate(exam.datetime)}</span>
         </div>
         <div className="flex items-center">
-          <Clock className="mr-2 h-4 w-4 text-gray-400 dark:text-gray-500" />
+          <Clock className="mr-2 h-5 w-5 text-gray-400 dark:text-gray-500" />
           <span>{exam.datetimeupto}</span>
         </div>
         {(exam.roomcode || exam.seatno) && (
           <div className="flex items-center space-x-4">
             {exam.roomcode && (
               <div className="flex items-center">
-                <MapPin className="mr-2 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <MapPin className="mr-2 h-5 w-5 text-gray-400 dark:text-gray-500" />
                 <span>{exam.roomcode}</span>
               </div>
             )}
             {exam.seatno && (
               <div className="flex items-center">
-                <Armchair className="mr-2 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <Armchair className="mr-2 h-5 w-5 text-gray-400 dark:text-gray-500" />
                 <span>{exam.seatno}</span>
               </div>
             )}
@@ -241,7 +230,7 @@ function LoadingSkeleton() {
   return (
     <div className="space-y-4">
       {[...Array(3)].map((_, i) => (
-        <div key={i} className="bg-[#0B0B0D] dark:bg-white shadow rounded-lg p-6">
+        <div key={i} className="bg-black dark:bg-white shadow rounded-lg p-6">
           <div className="flex justify-between items-start mb-4">
             <div className="space-y-2">
               <div className="h-5 w-40 bg-[#0B0B0D] dark:bg-gray-200 rounded"></div>
@@ -259,3 +248,4 @@ function LoadingSkeleton() {
     </div>
   )
 }
+

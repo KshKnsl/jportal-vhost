@@ -32,7 +32,7 @@ import {
 } from "https://cdn.jsdelivr.net/npm/jsjiit@0.0.16/dist/jsjiit.esm.js";
 import GradeCard from "./GradeCard";
 import MarksCard from "./MarksCard";
-import CGPATargetCalculator  from "./CGPATargetCalculator";
+import CGPATargetCalculator from "./CGPATargetCalculator";
 
 export default function Grades({
   w,
@@ -68,6 +68,9 @@ export default function Grades({
   marksLoading,
   setMarksLoading,
 }) {
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [mounted, setMounted] = useState(true);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -152,7 +155,7 @@ export default function Grades({
   }, [w, marksSemesters.length]);
 
   useEffect(() => {
-    let mounted = true;
+    setMounted(true);
 
     const processPdfMarks = async () => {
       if (!selectedMarksSem || marksData[selectedMarksSem.registration_id]) {
@@ -222,7 +225,7 @@ export default function Grades({
     }
 
     return () => {
-      mounted = false;
+      setMounted(false);
     };
   }, [selectedMarksSem, w.session, marksData]);
 
@@ -300,7 +303,6 @@ export default function Grades({
     );
   }
 
-  const [isDownloading, setIsDownloading] = useState(false);
 
   const handleDownloadMarks = async (semester) => {
     setIsDownloading(true);
@@ -329,9 +331,9 @@ export default function Grades({
       >
         <TabsList className="grid w-full grid-cols-3 mb-4 bg-[#0B0B0D] dark:bg-gray-50 rounded-lg p-1">
           <AnimatePresence mode="wait">
-            {["overview", "semester", "marks"].map((tab) => (
+            {["overview", "semester", "marks"].map((tab, index) => (
               <TabsTrigger
-                key={tab}
+                key={index}
                 value={tab}
                 className="bg-transparent data-[state=active]:bg-white dark:data-[state=active]:bg-black text-gray-300 dark:text-gray-700 data-[state=active]:text-black dark:data-[state=active]:text-white rounded-md transition-all duration-200"
               >
@@ -546,7 +548,7 @@ export default function Grades({
                         {...fadeInUp}
                         className="space-y-4"
                       >
-                        {gradeCard.gradecard.map((subject, index) => (
+                        {gradeCard.gradecard.map((subject) => (
                           <GradeCard
                             key={subject.subjectcode}
                             subject={subject}
@@ -619,7 +621,7 @@ export default function Grades({
                         {...fadeInUp}
                         className="space-y-4"
                       >
-                        {marksSemesterData.courses.map((course, index) => (
+                        {marksSemesterData.courses.map((course) => (
                           <MarksCard key={course.code} course={course} />
                         ))}
                       </motion.div>
